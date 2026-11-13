@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PITAKE — Studio Operations Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/dashboard.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-decor-outer"></div>
+      <div class="sidebar-decor-inner"></div>
+
+      <!-- Brand Header -->
+      <div class="brand-header">
+        <div class="brand-mark">
+          <div class="brand-ring-inner"></div>
+          <div class="brand-dot"></div>
+          <span class="brand-spoke" style="transform: rotate(0deg)"></span>
+          <span class="brand-spoke" style="transform: rotate(45deg)"></span>
+          <span class="brand-spoke" style="transform: rotate(90deg)"></span>
+          <span class="brand-spoke" style="transform: rotate(135deg)"></span>
+        </div>
+        <div>
+          <p class="font-display brand-title">PITAKE</p>
+          <p class="brand-subtitle">Memories in every frame</p>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="sidebar-nav" aria-label="Main navigation">
+        <p class="nav-section-label">Workspace</p>
+        <div class="nav-list">
+          <button class="nav-item active" data-nav="Dashboard">
+            <span class="nav-indicator"></span>
+            <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7">
+              <rect x="3" y="3" width="7" height="7" rx="1.5" />
+              <rect x="14" y="3" width="7" height="7" rx="1.5" />
+              <rect x="3" y="14" width="7" height="7" rx="1.5" />
+              <rect x="14" y="14" width="7" height="7" rx="1.5" />
+            </svg>
+            Dashboard
+          </button>
+
+          <button class="nav-item" data-nav="Requisition">
+            <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7">
+              <path d="M9 5h6" />
+              <path d="M9 9h6M9 13h4" />
+              <path d="M6 3.5H5A2 2 0 0 0 3 5.5v15A2 2 0 0 0 5 22h10.5L21 16.5v-11A2 2 0 0 0 19 3.5h-1" />
+              <rect x="7" y="2" width="10" height="4" rx="1.5" />
+              <path d="M15 22v-4.5a1 1 0 0 1 1-1h5" />
+            </svg>
+            Requisition
+          </button>
+
+          <button class="nav-item" data-nav="Inventory">
+            <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7">
+              <path d="m3 7 9-4 9 4-9 4-9-4Z" />
+              <path d="m3 7 9 4 9-4v10l-9 4-9-4V7Z" />
+              <path d="M12 11v10M7.5 5 16.5 9" />
+            </svg>
+            Inventory
+          </button>
+
+          <button class="nav-item" data-nav="Purchasing">
+            <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7">
+              <circle cx="9" cy="20" r="1" />
+              <circle cx="18" cy="20" r="1" />
+              <path d="M2.5 3h2l2.4 11.2a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 2-1.6L21 7H6" />
+            </svg>
+            Purchasing
+          </button>
+
+          <button class="nav-item" data-nav="Delivery">
+            <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7">
+              <path d="M3 6h11v11H3zM14 10h4l3 3v4h-7z" />
+              <circle cx="7" cy="19" r="2" />
+              <circle cx="18" cy="19" r="2" />
+            </svg>
+            Delivery
+          </button>
+        </div>
+      </nav>
+
+    <!-- Stock Health Widget -->
+    <div class="stock-health-card">
+        <div class="stock-health-header">
+            <span class="stock-health-dot"></span>
+            <span class="stock-health-label">Stock health</span>
+        </div>
+
+        <p class="font-display stock-health-value" id="stockHealthText">
+            Inventory is 0% ready
+        </p>
+
+        <div class="stock-progress-track">
+            <div
+                class="stock-progress-fill"
+                id="stockHealthBar"
+                style="width: 0%"
+            ></div>
+        </div>
+    </div>
+
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        <button class="footer-btn">
+          <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.6v-.2h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1Z" />
+          </svg>
+          Settings
+        </button>
+        <button class="footer-btn" id="logoutBtn">
+          <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7">
+            <path d="M10 17l5-5-5-5M15 12H3" />
+            <path d="M14 3h5a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-5" />
+          </svg>
+          Logout
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Workspace -->
+    <div class="main-wrapper">
+      <!-- Top Header -->
+      <header class="top-header">
+        <!-- Global Search -->
+        <div class="search-box">
+            <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7">
+                <circle cx="11" cy="11" r="7" />
+                <path d="m20 20-4-4" />
+            </svg>
+
+            <input
+                type="text"
+                id="globalSearch"
+                placeholder="Search everything..."
+                aria-label="Search everything"
+                autocomplete="off"
+            />
+
+            <kbd class="search-kbd">Ctrl K</kbd>
+
+            <div id="globalSearchResults" class="global-search-results hidden">
+                <p class="search-empty">Start typing to search.</p>
+            </div>
+        </div>
+
+       <div class="header-actions">
+        <div class="notif-wrapper">
+            <button id="notif-btn" class="notif-btn" aria-label="Notifications">
+                <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7">
+                    <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z" />
+                    <path d="M10 21h4" />
+                </svg>
+                <span class="notif-badge" id="notifBadge"></span>
+            </button>
+
+            <div id="notif-popover" class="notif-popover hidden">
+                <p class="font-display notif-title">Notifications</p>
+                <div id="notificationList">
+                    <p class="notif-text">Loading notifications...</p>
+                </div>
+            </div>
+        </div>
+
+          <span class="header-divider"></span>
+
+        <button class="user-profile-btn">
+            <div class="user-avatar" id="userAvatar">AD</div>
+            <div>
+                <p class="user-name" id="userName">Admin</p>
+                <p class="user-role" id="userRole">Administrator</p>
+            </div>
+            <svg class="user-chevron" aria-hidden="true" fill="none" height="16" viewBox="0 0 24 24" width="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7">
+                <path d="m8 10 4 4 4-4" />
+            </svg>
+        </button>
+        </div>
+      </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Page Title Row -->
+        <section class="page-header">
+            <div>
+                <div class="page-date" id="pageDate"></div>
+
+                <h1 class="font-display page-title">
+                    Welcome back, <span id="welcomeName">Admin</span><span class="title-dot">.</span>
+                </h1>
+
+                <p class="page-subtitle">
+                    Here’s what’s happening with your studio operations today.
+                </p>
+            </div>
+
+            <button class="primary-btn">
+                <svg aria-hidden="true" fill="none" height="16" viewBox="0 0 24 24" width="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7">
+                    <path d="M12 5v14M5 12h14" />
+                </svg>
+                New Requisition
+            </button>
+        </section>
+
+        <!-- Stats Grid -->
+        <section class="stats-grid">
+          <!-- Stat 1 -->
+          <article class="stat-card">
+            <div class="stat-orb stat-orb-brown"></div>
+            <div class="stat-top">
+              <div class="stat-icon icon-brown">
+                <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7">
+                  <path d="M4 7v13h16V7M3 3h18v4H3zM9 11h6" />
+                </svg>
+              </div>
+              <svg class="dots-icon" aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18">
+                <circle cx="5" cy="12" r="1" fill="currentColor" />
+                <circle cx="12" cy="12" r="1" fill="currentColor" />
+                <circle cx="19" cy="12" r="1" fill="currentColor" />
+              </svg>
+            </div>
+            <p class="stat-label">Total Inventory Items</p>
+            <p class="font-display stat-value" id="totalInventory">0</p>
+            <div class="stat-meta">
+                <span class="stat-change" id="inventoryCategoryCount">0</span>
+                <span class="stat-detail">inventory categories</span>
+            </div>
+          </article>
+
+          <!-- Stat 2 -->
+          <article class="stat-card">
+            <div class="stat-orb stat-orb-pink"></div>
+            <div class="stat-top">
+              <div class="stat-icon icon-pink">
+                <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7">
+                  <path d="M9 5H6a2 2 0 0 0-2 2v13h16V7a2 2 0 0 0-2-2h-3" />
+                  <rect x="8" y="2" width="8" height="5" rx="1" />
+                  <path d="M8 12h8M8 16h5" />
+                </svg>
+              </div>
+              <svg class="dots-icon" aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18">
+                <circle cx="5" cy="12" r="1" fill="currentColor" />
+                <circle cx="12" cy="12" r="1" fill="currentColor" />
+                <circle cx="19" cy="12" r="1" fill="currentColor" />
+              </svg>
+            </div>
+            <p class="stat-label">Pending Requisitions</p>
+            <p class="font-display stat-value" id="pendingRequisitions">0</p>
+            <div class="stat-meta">
+                <span class="stat-change" id="requisitionMeta">0</span>
+                <span class="stat-detail">awaiting review</span>
+            </div>
+          </article>
+
+          <!-- Stat 3 -->
+          <article class="stat-card">
+            <div class="stat-orb stat-orb-gold"></div>
+            <div class="stat-top">
+              <div class="stat-icon icon-gold">
+                <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7">
+                  <path d="M12 3 2.8 20h18.4L12 3Z" />
+                  <path d="M12 9v5M12 17.5v.1" />
+                </svg>
+              </div>
+              <svg class="dots-icon" aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18">
+                <circle cx="5" cy="12" r="1" fill="currentColor" />
+                <circle cx="12" cy="12" r="1" fill="currentColor" />
+                <circle cx="19" cy="12" r="1" fill="currentColor" />
+              </svg>
+            </div>
+            <p class="stat-label">Low Stock Items</p>
+            <p class="font-display stat-value" id="lowStockItems">0</p>
+            <div class="stat-meta">
+                <span class="stat-change" id="lowStockMeta">0</span>
+                <span class="stat-detail">out of stock</span>
+            </div>
+          </article>
+
+          <!-- Stat 4 -->
+          <article class="stat-card">
+            <div class="stat-orb stat-orb-maroon"></div>
+            <div class="stat-top">
+              <div class="stat-icon icon-maroon">
+                <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7">
+                  <path d="M3 6h11v11H3zM14 10h4l3 3v4h-7z" />
+                  <circle cx="7" cy="19" r="2" />
+                  <circle cx="18" cy="19" r="2" />
+                </svg>
+              </div>
+              <svg class="dots-icon" aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18">
+                <circle cx="5" cy="12" r="1" fill="currentColor" />
+                <circle cx="12" cy="12" r="1" fill="currentColor" />
+                <circle cx="19" cy="12" r="1" fill="currentColor" />
+              </svg>
+            </div>
+            <p class="stat-label">Pending Deliveries</p>
+            <p class="font-display stat-value" id="pendingDeliveries">0</p>
+            <div class="stat-meta">
+                <span class="stat-change" id="deliveryMeta">0</span>
+                <span class="stat-detail">awaiting preparation</span>
+            </div>
+          </article>
+        </section>
+
+        <!-- Middle Panels Grid -->
+        <section class="middle-grid">
+          <!-- Inventory Overview -->
+          <article class="panel-card">
+            <div class="panel-header">
+              <div>
+                <h2 class="font-display panel-title">Inventory Overview</h2>
+                <p class="panel-subtitle">Stock distribution across all categories</p>
+              </div>
+              <button class="filter-btn">
+                This month
+                <svg aria-hidden="true" fill="none" height="13" viewBox="0 0 24 24" width="13" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7">
+                  <path d="m8 10 4 4 4-4" />
+                </svg>
+              </button>
+            </div>
+
+            <div class="overview-body">
+              <div class="donut-wrapper">
+                <svg viewBox="0 0 120 120" class="donut-svg" aria-label="Inventory distribution chart">
+                <!-- Background circle -->
+                <circle
+                    cx="60" cy="60" r="43"
+                    fill="none"
+                    stroke="#F0E3D3"
+                    stroke-width="15"
+                />
+
+                <!-- Consumable Supplies -->
+                <circle
+                    id="consumableArc"
+                    cx="60" cy="60" r="43"
+                    fill="none"
+                    stroke="#5B2633"
+                    stroke-width="15"
+                />
+
+                <!-- Equipment -->
+                <circle
+                    id="equipmentArc"
+                    cx="60" cy="60" r="43"
+                    fill="none"
+                    stroke="#E8A6B8"
+                    stroke-width="15"
+                />
+
+                <!-- Rental Costumes -->
+                <circle
+                    id="costumeArc"
+                    cx="60" cy="60" r="43"
+                    fill="none"
+                    stroke="#B9835A"
+                    stroke-width="15"
+                />
+                </svg>
+                <div class="donut-center">
+                  <span class="font-display donut-total" id="inventoryChartTotal">0</span>
+                  <span class="donut-label">Total items</span>
+                </div>
+              </div>
+
+              <div class="category-list">
+                <!-- Category 1 -->
+                <div class="category-item">
+                  <div class="category-row">
+                    <div class="category-name-wrap">
+                      <span class="category-dot" style="background-color: #5B2633"></span>
+                      <span class="category-name">Consumable Supplies</span>
+                    </div>
+                    <span class="category-count" id="consumableCount">0 items</span>
+                  </div>
+                  <div class="progress-track">
+                    <div class="progress-fill"  id="consumableProgress" style="width: 46%; background-color: #5B2633"></div>
+                  </div>
+                </div>
+
+                <!-- Category 2 -->
+                <div class="category-item">
+                  <div class="category-row">
+                    <div class="category-name-wrap">
+                      <span class="category-dot" style="background-color: #E8A6B8"></span>
+                      <span class="category-name">Equipment</span>
+                    </div>
+                    <span class="category-count" id="equipmentCount">0 items</span>
+                  </div>
+                  <div class="progress-track">
+                    <div class="progress-fill"  id="equipmentProgress" style="width: 32%; background-color: #E8A6B8"></div>
+                  </div>
+                </div>
+
+                <!-- Category 3 -->
+                <div class="category-item">
+                  <div class="category-row">
+                    <div class="category-name-wrap">
+                      <span class="category-dot" style="background-color: #B9835A"></span>
+                      <span class="category-name">Rental Costumes</span>
+                    </div>
+                    <span class="category-count" id="costumeCount">0 items</span>
+                  </div>
+                  <div class="progress-track">
+                    <div class="progress-fill" id="costumeProgress" style="width: 22%; background-color: #B9835A"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Recent Activity -->
+          <article class="panel-card">
+            <div class="panel-header compact">
+              <div>
+                <h2 class="font-display panel-title">Recent Activity</h2>
+                <p class="panel-subtitle">Latest updates from your team</p>
+              </div>
+              <button class="text-link">View all</button>
+            </div>
+
+            <div class="timeline" id="recentActivityList">
+                <p id="activityLoading">Loading recent activities...</p>
+            </div>
+          </article>
+        </section>
+
+        <!-- Recent Requisitions Table -->
+        <section class="table-card">
+          <div class="table-header">
+            <div>
+              <h2 class="font-display panel-title">Recent Requisitions</h2>
+              <p class="panel-subtitle">Track and manage the latest supply requests</p>
+            </div>
+            <button class="text-link-arrow">
+              View all requisitions
+              <svg aria-hidden="true" fill="none" height="14" viewBox="0 0 24 24" width="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7">
+                <path d="M5 12h14m-5-5 5 5-5 5" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Request ID</th>
+                  <th>Requester</th>
+                  <th>Date Requested</th>
+                  <th>Items</th>
+                  <th>Status</th>
+                  <th class="col-actions"><span class="sr-only">Actions</span></th>
+                </tr>
+              </thead>
+              <tbody id="recentRequisitionsBody">
+                <tr>
+                    <td colspan="6" style="text-align: center;">
+                        Loading requisitions...
+                    </td>
+                </tr>
+            </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Optional lightweight script for notification popover & active nav styling -->
+  <script>
+    const notifBtn = document.getElementById("notif-btn");
+    const notifPopover = document.getElementById("notif-popover");
+    notifBtn.addEventListener("click", () => notifPopover.classList.toggle("hidden"));
+
+    document.querySelectorAll(".nav-item").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".nav-item").forEach((item) => {
+          item.classList.remove("active");
+          const indicator = item.querySelector(".nav-indicator");
+          if (indicator) indicator.remove();
+        });
+        btn.classList.add("active");
+        const bar = document.createElement("span");
+        bar.className = "nav-indicator";
+        btn.prepend(bar);
+      });
+    });
+  </script>
+
+  <script type="module" src="../js/dashboard.js"></script>
+</body>
+</html>

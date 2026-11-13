@@ -51,5 +51,6 @@ loginForm.addEventListener("submit", async (event) => {
     }
 
     console.log("Admin verified:", profile);
-    loginMessage.textContent = "Admin login successful!";
+
+    window.location.href = "pages/dashboard.html";
 });
