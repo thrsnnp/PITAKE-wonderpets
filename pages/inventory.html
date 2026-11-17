@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inventory Management | PITAKE</title>
+
+  <link rel="stylesheet" href="../css/sidebar.css" />
+  <link rel="stylesheet" href="../css/dashboard.css" />
+  <link rel="stylesheet" href="../css/inventory.css" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div id="inventoryPage" class="app-layout">
+    <!-- Dynamic Sidebar Mount -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Workspace -->
+    <div class="main-wrapper">
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="search-box">
+          <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7">
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-4-4" />
+          </svg>
+          <input type="text" placeholder="Search inventory, requisitions..." aria-label="Search" />
+          <kbd class="search-kbd">⌘ K</kbd>
+        </div>
+
+        <div class="header-actions">
+          <div class="notif-wrapper">
+            <button id="notif-btn" class="notif-btn" aria-label="Notifications">
+              <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7">
+                <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z" />
+                <path d="M10 21h4" />
+              </svg>
+              <span class="notif-badge"></span>
+            </button>
+          </div>
+
+          <span class="header-divider"></span>
+
+          <button class="user-profile-btn">
+            <div class="user-avatar">SF</div>
+            <div>
+              <p class="user-name">Sari Febriani</p>
+              <p class="user-role">Operations Manager</p>
+            </div>
+            <svg class="user-chevron" aria-hidden="true" fill="none" height="16" viewBox="0 0 24 24" width="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7">
+              <path d="m8 10 4 4 4-4" />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Page Title Row -->
+        <section class="page-header">
+          <div>
+            <p class="page-date">Operations / Inventory</p>
+            <h1 class="font-display page-title">Inventory Management<span class="title-dot">.</span></h1>
+            <p class="page-subtitle">Monitor supplies, equipment, and rental assets across PITAKE operations.</p>
+          </div>
+          <button class="primary-btn" id="openAddItemBtn">
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+            Add Item
+          </button>
+        </section>
+
+        <!-- Stats Grid -->
+        <section class="stats-grid inv-stats-grid">
+          <article class="stat-card inv-stat-card">
+            <div class="stat-orb inv-orb stat-orb-brown"></div>
+            <p class="inv-stat-label">Total Items</p>
+            <div class="inv-stat-row">
+              <p class="font-display inv-stat-value">1,248</p>
+              <p class="inv-stat-note">Across 3 categories</p>
+            </div>
+          </article>
+
+          <article class="stat-card inv-stat-card">
+            <div class="stat-orb inv-orb stat-orb-gold"></div>
+            <p class="inv-stat-label">Low Stock</p>
+            <div class="inv-stat-row">
+              <p class="font-display inv-stat-value">12</p>
+              <p class="inv-stat-note">Needs replenishment</p>
+            </div>
+          </article>
+
+          <article class="stat-card inv-stat-card">
+            <div class="stat-orb inv-orb stat-orb-pink"></div>
+            <p class="inv-stat-label">Out of Stock</p>
+            <div class="inv-stat-row">
+              <p class="font-display inv-stat-value">5</p>
+              <p class="inv-stat-note">Action required</p>
+            </div>
+          </article>
+
+          <article class="stat-card inv-stat-card">
+            <div class="stat-orb inv-orb stat-orb-maroon"></div>
+            <p class="inv-stat-label">Equipment in Use</p>
+            <div class="inv-stat-row">
+              <p class="font-display inv-stat-value">28</p>
+              <p class="inv-stat-note">Across 14 events</p>
+            </div>
+          </article>
+        </section>
+
+        <!-- Inventory Table Card -->
+        <section class="table-card">
+          <!-- Category Tabs -->
+          <div class="inv-tabs-bar">
+            <div class="inv-tabs-list">
+              <button class="inv-tab active">
+                All Inventory
+                <span class="inv-tab-indicator"></span>
+              </button>
+              <button class="inv-tab">Consumable Supplies</button>
+              <button class="inv-tab">Equipment</button>
+              <button class="inv-tab">Rental Costumes</button>
+            </div>
+          </div>
+
+          <!-- Search & Filter Toolbar -->
+          <div class="inv-toolbar">
+            <div class="inv-search-box">
+              <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="7" />
+                <path d="m20 20-4-4" />
+              </svg>
+              <input type="text" placeholder="Search item name or ID..." aria-label="Search item name or ID" />
+            </div>
+
+            <div class="inv-filters">
+              <div class="inv-select-wrap">
+                <select class="inv-select" aria-label="Filter by category">
+                  <option>All categories</option>
+                  <option>Consumable Supplies</option>
+                  <option>Equipment</option>
+                  <option>Rental Costumes</option>
+                </select>
+                <span class="inv-select-icon">
+                  <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m8 10 4 4 4-4" />
+                  </svg>
+                </span>
+              </div>
+
+              <div class="inv-select-wrap">
+                <select class="inv-select" aria-label="Filter by status">
+                  <option>All statuses</option>
+                  <option>In Stock</option>
+                  <option>Low Stock</option>
+                  <option>Out of Stock</option>
+                  <option>Available</option>
+                  <option>In Use</option>
+                  <option>Maintenance</option>
+                  <option>Damaged</option>
+                  <option>Rented</option>
+                </select>
+                <span class="inv-select-icon">
+                  <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m8 10 4 4 4-4" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Inventory Data Table -->
+          <table class="inv-table">
+            <thead>
+              <tr>
+                <th class="w-id">Item ID</th>
+                <th class="w-name">Item Name</th>
+                <th class="w-cat">Category</th>
+                <th class="w-qty text-center">Qty. Available</th>
+                <th class="w-min text-center">Minimum Stock</th>
+                <th class="w-unit">Unit</th>
+                <th class="w-status">Status</th>
+                <th class="w-view"><span class="sr-only">View</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Row 1: Low Stock -->
+              <tr class="row-low-stock">
+                <td class="cell-id">CON-0018</td>
+                <td>
+                  <div class="item-name-cell">
+                    <span class="item-box-icon">
+                      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m3 7 9-4 9 4-9 4-9-4Z" />
+                        <path d="m3 7 9 4 9-4v10l-9 4-9-4V7ZM12 11v10" />
+                      </svg>
+                    </span>
+                    <span class="item-title">Premium photo paper 4 × 6</span>
+                  </div>
+                </td>
+                <td class="cell-muted">Consumable Supplies</td>
+                <td class="cell-qty text-center qty-alert">8</td>
+                <td class="cell-muted text-center">20</td>
+                <td class="cell-muted">boxes</td>
+                <td><span class="inventory-status inventory-status-low-stock">Low Stock</span></td>
+                <td class="cell-view">
+                  <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+                    <circle cx="12" cy="12" r="2.5" />
+                  </svg>
+                </td>
+              </tr>
+
+              <!-- Row 2: Out of Stock -->
+              <tr class="row-out-of-stock">
+                <td class="cell-id">CON-0024</td>
+                <td>
+                  <div class="item-name-cell">
+                    <span class="item-box-icon">
+                      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m3 7 9-4 9 4-9 4-9-4Z" />
+                        <path d="m3 7 9 4 9-4v10l-9 4-9-4V7ZM12 11v10" />
+                      </svg>
+                    </span>
+                    <span class="item-title">DNP printer ink ribbon</span>
+                  </div>
+                </td>
+                <td class="cell-muted">Consumable Supplies</td>
+                <td class="cell-qty text-center qty-alert">0</td>
+                <td class="cell-muted text-center">8</td>
+                <td class="cell-muted">rolls</td>
+                <td><span class="inventory-status inventory-status-out-of-stock">Out of Stock</span></td>
+                <td class="cell-view">
+                  <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+                    <circle cx="12" cy="12" r="2.5" />
+                  </svg>
+                </td>
+              </tr>
+
+              <!-- Row 3: In Use -->
+              <tr>
+                <td class="cell-id">EQP-0007</td>
+                <td>
+                  <div class="item-name-cell">
+                    <span class="item-box-icon">
+                      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m3 7 9-4 9 4-9 4-9-4Z" />
+                        <path d="m3 7 9 4 9-4v10l-9 4-9-4V7ZM12 11v10" />
+                      </svg>
+                    </span>
+                    <span class="item-title">Canon EOS R6 camera</span>
+                  </div>
+                </td>
+                <td class="cell-muted">Equipment</td>
+                <td class="cell-qty text-center qty-normal">3</td>
+                <td class="cell-muted text-center">2</td>
+                <td class="cell-muted">units</td>
+                <td><span class="inventory-status inventory-status-in-use">In Use</span></td>
+                <td class="cell-view">
+                  <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+                    <circle cx="12" cy="12" r="2.5" />
+                  </svg>
+                </td>
+              </tr>
+
+              <!-- Row 4: Available -->
+              <tr>
+                <td class="cell-id">EQP-0012</td>
+                <td>
+                  <div class="item-name-cell">
+                    <span class="item-box-icon">
+                      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m3 7 9-4 9 4-9 4-9-4Z" />
+                        <path d="m3 7 9 4 9-4v10l-9 4-9-4V7ZM12 11v10" />
+                      </svg>
+                    </span>
+                    <span class="item-title">DNP DS-RX1HS printer</span>
+                  </div>
+                </td>
+                <td class="cell-muted">Equipment</td>
+                <td class="cell-qty text-center qty-normal">5</td>
+                <td class="cell-muted text-center">3</td>
+                <td class="cell-muted">units</td>
+                <td><span class="inventory-status inventory-status-available">Available</span></td>
+                <td class="cell-view">
+                  <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+                    <circle cx="12" cy="12" r="2.5" />
+                  </svg>
+                </td>
+              </tr>
+
+              <!-- Row 5: Maintenance -->
+              <tr>
+                <td class="cell-id">EQP-0021</td>
+                <td>
+                  <div class="item-name-cell">
+                    <span class="item-box-icon">
+                      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m3 7 9-4 9 4-9 4-9-4Z" />
+                        <path d="m3 7 9 4 9-4v10l-9 4-9-4V7ZM12 11v10" />
+                      </svg>
+                    </span>
+                    <span class="item-title">Godox softbox lighting kit</span>
+                  </div>
+                </td>
+                <td class="cell-muted">Equipment</td>
+                <td class="cell-qty text-center qty-alert">2</td>
+                <td class="cell-muted text-center">2</td>
+                <td class="cell-muted">sets</td>
+                <td><span class="inventory-status inventory-status-maintenance">Maintenance</span></td>
+                <td class="cell-view">
+                  <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+                    <circle cx="12" cy="12" r="2.5" />
+                  </svg>
+                </td>
+              </tr>
+
+              <!-- Row 6: Damaged -->
+              <tr>
+                <td class="cell-id">EQP-0027</td>
+                <td>
+                  <div class="item-name-cell">
+                    <span class="item-box-icon">
+                      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m3 7 9-4 9 4-9 4-9-4Z" />
+                        <path d="m3 7 9 4 9-4v10l-9 4-9-4V7ZM12 11v10" />
+                      </svg>
+                    </span>
+                    <span class="item-title">Portable touch display</span>
+                  </div>
+                </td>
+                <td class="cell-muted">Equipment</td>
+                <td class="cell-qty text-center qty-alert">1</td>
+                <td class="cell-muted text-center">1</td>
+                <td class="cell-muted">units</td>
+                <td><span class="inventory-status inventory-status-damaged">Damaged</span></td>
+                <td class="cell-view">
+                  <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+                    <circle cx="12" cy="12" r="2.5" />
+                  </svg>
+                </td>
+              </tr>
+
+              <!-- Row 7: Rented -->
+              <tr>
+                <td class="cell-id">CST-0035</td>
+                <td>
+                  <div class="item-name-cell">
+                    <span class="item-box-icon">
+                      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m3 7 9-4 9 4-9 4-9-4Z" />
+                        <path d="m3 7 9 4 9-4v10l-9 4-9-4V7ZM12 11v10" />
+                      </svg>
+                    </span>
+                    <span class="item-title">1970s disco costume set</span>
+                  </div>
+                </td>
+                <td class="cell-muted">Rental Costumes</td>
+                <td class="cell-qty text-center qty-normal">12</td>
+                <td class="cell-muted text-center">5</td>
+                <td class="cell-muted">pieces</td>
+                <td><span class="inventory-status inventory-status-rented">Rented</span></td>
+                <td class="cell-view">
+                  <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+                    <circle cx="12" cy="12" r="2.5" />
+                  </svg>
+                </td>
+              </tr>
+
+              <!-- Row 8: Available -->
+              <tr>
+                <td class="cell-id">CST-0042</td>
+                <td>
+                  <div class="item-name-cell">
+                    <span class="item-box-icon">
+                      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m3 7 9-4 9 4-9 4-9-4Z" />
+                        <path d="m3 7 9 4 9-4v10l-9 4-9-4V7ZM12 11v10" />
+                      </svg>
+                    </span>
+                    <span class="item-title">Victorian accessories set</span>
+                  </div>
+                </td>
+                <td class="cell-muted">Rental Costumes</td>
+                <td class="cell-qty text-center qty-normal">18</td>
+                <td class="cell-muted text-center">6</td>
+                <td class="cell-muted">pieces</td>
+                <td><span class="inventory-status inventory-status-available">Available</span></td>
+                <td class="cell-view">
+                  <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+                    <circle cx="12" cy="12" r="2.5" />
+                  </svg>
+                </td>
+              </tr>
+
+              <!-- Row 9: Maintenance -->
+              <tr>
+                <td class="cell-id">CST-0048</td>
+                <td>
+                  <div class="item-name-cell">
+                    <span class="item-box-icon">
+                      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m3 7 9-4 9 4-9 4-9-4Z" />
+                        <path d="m3 7 9 4 9-4v10l-9 4-9-4V7ZM12 11v10" />
+                      </svg>
+                    </span>
+                    <span class="item-title">Classic flapper dress set</span>
+                  </div>
+                </td>
+                <td class="cell-muted">Rental Costumes</td>
+                <td class="cell-qty text-center qty-normal">6</td>
+                <td class="cell-muted text-center">4</td>
+                <td class="cell-muted">pieces</td>
+                <td><span class="inventory-status inventory-status-maintenance">Maintenance</span></td>
+                <td class="cell-view">
+                  <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+                    <circle cx="12" cy="12" r="2.5" />
+                  </svg>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Pagination Footer -->
+          <div class="inv-pagination">
+            <p>Showing 9 of 1,248 inventory items</p>
+            <div class="inv-page-buttons">
+              <button class="inv-page-btn">Previous</button>
+              <button class="inv-page-btn active">1</button>
+              <button class="inv-page-btn">2</button>
+              <button class="inv-page-btn">Next</button>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL 1: ADD INVENTORY ITEM (Hidden by default)
+  =========================================== -->
+  <div class="inv-modal-backdrop hidden" id="addItemModal">
+    <div class="inv-modal-box">
+      <div class="inv-modal-header">
+        <div>
+          <p class="font-display inv-modal-title">Add Inventory Item</p>
+          <p class="inv-modal-subtitle">Register a new supply, equipment, or costume asset.</p>
+        </div>
+        <button type="button" class="inv-icon-close" aria-label="Close form">
+          <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m6 6 12 12M18 6 6 18" />
+          </svg>
+        </button>
+      </div>
+
+      <form class="inv-modal-form">
+        <div class="inv-form-grid">
+          <label class="col-span-2">
+            <span class="inv-field-label">Item name</span>
+            <input name="name" class="inv-field-input" placeholder="e.g. Fujifilm Instax film pack" required />
+          </label>
+
+          <label>
+            <span class="inv-field-label">Category</span>
+            <select name="category" class="inv-field-input">
+              <option>Consumable Supplies</option>
+              <option>Equipment</option>
+              <option>Rental Costumes</option>
+            </select>
+          </label>
+
+          <label>
+            <span class="inv-field-label">Unit</span>
+            <select name="unit" class="inv-field-input">
+              <option>units</option>
+              <option>boxes</option>
+              <option>rolls</option>
+              <option>sets</option>
+              <option>pieces</option>
+            </select>
+          </label>
+
+          <label>
+            <span class="inv-field-label">Opening quantity</span>
+            <input name="quantity" type="number" min="0" value="1" class="inv-field-input" required />
+          </label>
+
+          <label>
+            <span class="inv-field-label">Minimum stock</span>
+            <input name="minimum" type="number" min="0" value="1" class="inv-field-input" required />
+          </label>
+
+          <label class="col-span-2">
+            <span class="inv-field-label">Description</span>
+            <textarea name="description" rows="3" class="inv-field-input inv-textarea" placeholder="Add specifications, compatibility, or handling notes..." required></textarea>
+          </label>
+        </div>
+
+        <div class="inv-modal-footer">
+          <button type="button" class="inv-btn-secondary">Cancel</button>
+          <button type="submit" class="primary-btn">
+            <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+            Add Item
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       DRAWER: ITEM DETAILS (Hidden by default)
+  =========================================== -->
+  <div class="inv-drawer-backdrop hidden" id="itemDetailsDrawer">
+    <aside class="inv-drawer-panel">
+      <div class="inv-drawer-header">
+        <div>
+          <p class="inv-drawer-kicker">Inventory item</p>
+          <p class="font-display inv-drawer-title">Premium photo paper 4 × 6</p>
+          <p class="inv-drawer-id">CON-0018</p>
+        </div>
+        <button type="button" class="inv-drawer-close" aria-label="Close details">
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m6 6 12 12M18 6 6 18" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="inv-drawer-body">
+        <div class="inv-avail-box">
+          <div>
+            <p class="inv-avail-label">Current availability</p>
+            <p class="font-display inv-avail-qty">8 <span class="inv-avail-unit">boxes</span></p>
+          </div>
+          <span class="inventory-status inventory-status-low-stock">Low Stock</span>
+        </div>
+
+        <div class="inv-meta-grid">
+          <div>
+            <p class="inv-field-label">Category</p>
+            <p class="inv-meta-val">Consumable Supplies</p>
+          </div>
+          <div>
+            <p class="inv-field-label">Minimum stock</p>
+            <p class="inv-meta-val">20 boxes</p>
+          </div>
+          <div>
+            <p class="inv-field-label">Location</p>
+            <p class="inv-meta-val">Main Store · Shelf A2</p>
+          </div>
+          <div>
+            <p class="inv-field-label">Condition</p>
+            <p class="inv-meta-val">Not applicable</p>
+          </div>
+          <div class="col-span-2">
+            <p class="inv-field-label">Description</p>
+            <p class="inv-meta-desc">Glossy dye-sublimation photo paper for DNP event printers.</p>
+          </div>
+        </div>
+
+        <div class="inv-history-section">
+          <div class="inv-history-head">
+            <span class="inv-history-icon">
+              <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 12a9 9 0 1 0 3-6.7L3 8" />
+                <path d="M3 3v5h5M12 7v5l3 2" />
+              </svg>
+            </span>
+            <div>
+              <p class="inv-history-title">Inventory history</p>
+              <p class="inv-history-sub">Recent stock movements and adjustments</p>
+            </div>
+          </div>
+
+          <div class="inv-movement-list">
+            <div class="inv-movement-row">
+              <span class="inv-move-badge outgoing">
+                <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 20V4m-6 6 6-6 6 6" />
+                </svg>
+              </span>
+              <div class="inv-move-info">
+                <div class="inv-move-top">
+                  <p class="inv-move-type">Outgoing · 12 boxes</p>
+                  <p class="inv-move-date">28 May 2025</p>
+                </div>
+                <p class="inv-move-reason">Weekend wedding events</p>
+                <p class="inv-move-by">Recorded by Alya Putri</p>
+              </div>
+            </div>
+
+            <div class="inv-movement-row">
+              <span class="inv-move-badge incoming">
+                <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 4v16m-6-6 6 6 6-6" />
+                </svg>
+              </span>
+              <div class="inv-move-info">
+                <div class="inv-move-top">
+                  <p class="inv-move-type">Incoming · 30 boxes</p>
+                  <p class="inv-move-date">20 May 2025</p>
+                </div>
+                <p class="inv-move-reason">Monthly replenishment</p>
+                <p class="inv-move-by">Recorded by Dimas Arta</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="inv-drawer-footer">
+        <button type="button" class="inv-btn-full">
+          <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 7h10M18 7h2M4 17h2M10 17h10" />
+            <circle cx="16" cy="7" r="2" />
+            <circle cx="8" cy="17" r="2" />
+          </svg>
+          Record Stock Adjustment
+        </button>
+        <p class="inv-drawer-note">Authorized inventory personnel only</p>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ==========================================
+       MODAL 2: ADJUST STOCK (Hidden by default)
+  =========================================== -->
+  <div class="inv-adjust-backdrop hidden" id="adjustStockModal">
+    <div class="inv-adjust-box">
+      <div class="inv-adjust-header">
+        <div>
+          <p class="font-display inv-adjust-title">Adjust Stock</p>
+          <p class="inv-adjust-sub">CON-0018 · Premium photo paper 4 × 6</p>
+        </div>
+        <button type="button" class="inv-drawer-close" aria-label="Close adjustment">
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m6 6 12 12M18 6 6 18" />
+          </svg>
+        </button>
+      </div>
+
+      <form>
+        <div class="inv-toggle-group">
+          <button type="button" class="inv-toggle-btn active">
+            <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 4v16m-6-6 6 6 6-6" />
+            </svg>
+            Incoming
+          </button>
+          <button type="button" class="inv-toggle-btn">
+            <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 20V4m-6 6 6-6 6 6" />
+            </svg>
+            Outgoing
+          </button>
+        </div>
+
+        <div class="inv-form-grid">
+          <label>
+            <span class="inv-field-label">Quantity</span>
+            <input name="quantity" type="number" min="1" value="1" class="inv-field-input" required />
+          </label>
+
+          <div>
+            <span class="inv-field-label">Current stock</span>
+            <div class="inv-readonly-box">8 boxes</div>
+          </div>
+
+          <label class="col-span-2">
+            <span class="inv-field-label">Reason</span>
+            <textarea name="reason" rows="3" class="inv-field-input inv-textarea" placeholder="Purchase delivery, return, transfer..." required></textarea>
+          </label>
+        </div>
+
+        <div class="inv-adjust-footer">
+          <button type="button" class="inv-btn-text">Cancel</button>
+          <button type="submit" class="primary-btn">Record Adjustment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <script type="module" src="../js/sidebar.js"></script>
+</body>
+</html>
