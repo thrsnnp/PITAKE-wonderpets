@@ -66,7 +66,7 @@
             <h1 class="font-display page-title">Inventory Management<span class="title-dot">.</span></h1>
             <p class="page-subtitle">Monitor supplies, equipment, and rental assets across PITAKE operations.</p>
           </div>
-          <button class="primary-btn" id="openAddItemBtn">
+          <button type="button" class="primary-btn" id="openAddItemBtn">
             <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 5v14M5 12h14" />
             </svg>
@@ -80,7 +80,7 @@
             <div class="stat-orb inv-orb stat-orb-brown"></div>
             <p class="inv-stat-label">Total Items</p>
             <div class="inv-stat-row">
-              <p class="font-display inv-stat-value">1,248</p>
+              <p class="font-display inv-stat-value" id="totalItemsCount">0</p>
               <p class="inv-stat-note">Across 3 categories</p>
             </div>
           </article>
@@ -89,7 +89,7 @@
             <div class="stat-orb inv-orb stat-orb-gold"></div>
             <p class="inv-stat-label">Low Stock</p>
             <div class="inv-stat-row">
-              <p class="font-display inv-stat-value">12</p>
+              <p class="font-display inv-stat-value" id="lowStockCount">0</p>
               <p class="inv-stat-note">Needs replenishment</p>
             </div>
           </article>
@@ -98,7 +98,7 @@
             <div class="stat-orb inv-orb stat-orb-pink"></div>
             <p class="inv-stat-label">Out of Stock</p>
             <div class="inv-stat-row">
-              <p class="font-display inv-stat-value">5</p>
+              <p class="font-display inv-stat-value" id="outOfStockCount">0</p>
               <p class="inv-stat-note">Action required</p>
             </div>
           </article>
@@ -107,7 +107,7 @@
             <div class="stat-orb inv-orb stat-orb-maroon"></div>
             <p class="inv-stat-label">Equipment in Use</p>
             <div class="inv-stat-row">
-              <p class="font-display inv-stat-value">28</p>
+              <p class="font-display inv-stat-value" id="equipmentInUseCount">0</p>
               <p class="inv-stat-note">Across 14 events</p>
             </div>
           </article>
@@ -117,15 +117,23 @@
         <section class="table-card">
           <!-- Category Tabs -->
           <div class="inv-tabs-bar">
-            <div class="inv-tabs-list">
-              <button class="inv-tab active">
-                All Inventory
-                <span class="inv-tab-indicator"></span>
-              </button>
-              <button class="inv-tab">Consumable Supplies</button>
-              <button class="inv-tab">Equipment</button>
-              <button class="inv-tab">Rental Costumes</button>
-            </div>
+              <div class="inv-tabs-list">
+                  <button type="button" class="inv-tab active" data-category-id="">
+                      All Inventory
+                  </button>
+
+                  <button type="button" class="inv-tab" data-category-id="1">
+                      Consumable Supplies
+                  </button>
+
+                  <button type="button" class="inv-tab" data-category-id="2">
+                      Equipment
+                  </button>
+
+                  <button type="button" class="inv-tab" data-category-id="3">
+                      Rental Costumes
+                  </button>
+              </div>
           </div>
 
           <!-- Search & Filter Toolbar -->
@@ -135,17 +143,23 @@
                 <circle cx="11" cy="11" r="7" />
                 <path d="m20 20-4-4" />
               </svg>
-              <input type="text" placeholder="Search item name or ID..." aria-label="Search item name or ID" />
+              <input
+                  type="text"
+                  id="inventorySearchInput"
+                  class="inv-search-input"
+                  placeholder="Search item name or ID..."
+                  aria-label="Search item name or ID"
+              />           
             </div>
 
             <div class="inv-filters">
               <div class="inv-select-wrap">
-                <select class="inv-select" aria-label="Filter by category">
-                  <option>All categories</option>
-                  <option>Consumable Supplies</option>
-                  <option>Equipment</option>
-                  <option>Rental Costumes</option>
-                </select>
+               <select
+                  class="inv-select"
+                  id="inventoryCategoryFilter"
+                  aria-label="Filter by category">
+                  <option value="">All categories</option>
+              </select>
                 <span class="inv-select-icon">
                   <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
                     <path d="m8 10 4 4 4-4" />
@@ -154,16 +168,11 @@
               </div>
 
               <div class="inv-select-wrap">
-                <select class="inv-select" aria-label="Filter by status">
-                  <option>All statuses</option>
-                  <option>In Stock</option>
-                  <option>Low Stock</option>
-                  <option>Out of Stock</option>
-                  <option>Available</option>
-                  <option>In Use</option>
-                  <option>Maintenance</option>
-                  <option>Damaged</option>
-                  <option>Rented</option>
+                <select class="inv-select" id="inventoryStatusFilter" aria-label="Filter by status">
+                  <option value="">All statuses</option>
+                  <option value="In Stock">In Stock</option>
+                  <option value="Low Stock">Low Stock</option>
+                  <option value="Out of Stock">Out of Stock</option>
                 </select>
                 <span class="inv-select-icon">
                   <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
@@ -188,249 +197,12 @@
                 <th class="w-view"><span class="sr-only">View</span></th>
               </tr>
             </thead>
-            <tbody>
-              <!-- Row 1: Low Stock -->
-              <tr class="row-low-stock">
-                <td class="cell-id">CON-0018</td>
-                <td>
-                  <div class="item-name-cell">
-                    <span class="item-box-icon">
-                      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="m3 7 9-4 9 4-9 4-9-4Z" />
-                        <path d="m3 7 9 4 9-4v10l-9 4-9-4V7ZM12 11v10" />
-                      </svg>
-                    </span>
-                    <span class="item-title">Premium photo paper 4 × 6</span>
-                  </div>
-                </td>
-                <td class="cell-muted">Consumable Supplies</td>
-                <td class="cell-qty text-center qty-alert">8</td>
-                <td class="cell-muted text-center">20</td>
-                <td class="cell-muted">boxes</td>
-                <td><span class="inventory-status inventory-status-low-stock">Low Stock</span></td>
-                <td class="cell-view">
-                  <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
-                    <circle cx="12" cy="12" r="2.5" />
-                  </svg>
-                </td>
-              </tr>
-
-              <!-- Row 2: Out of Stock -->
-              <tr class="row-out-of-stock">
-                <td class="cell-id">CON-0024</td>
-                <td>
-                  <div class="item-name-cell">
-                    <span class="item-box-icon">
-                      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="m3 7 9-4 9 4-9 4-9-4Z" />
-                        <path d="m3 7 9 4 9-4v10l-9 4-9-4V7ZM12 11v10" />
-                      </svg>
-                    </span>
-                    <span class="item-title">DNP printer ink ribbon</span>
-                  </div>
-                </td>
-                <td class="cell-muted">Consumable Supplies</td>
-                <td class="cell-qty text-center qty-alert">0</td>
-                <td class="cell-muted text-center">8</td>
-                <td class="cell-muted">rolls</td>
-                <td><span class="inventory-status inventory-status-out-of-stock">Out of Stock</span></td>
-                <td class="cell-view">
-                  <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
-                    <circle cx="12" cy="12" r="2.5" />
-                  </svg>
-                </td>
-              </tr>
-
-              <!-- Row 3: In Use -->
-              <tr>
-                <td class="cell-id">EQP-0007</td>
-                <td>
-                  <div class="item-name-cell">
-                    <span class="item-box-icon">
-                      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="m3 7 9-4 9 4-9 4-9-4Z" />
-                        <path d="m3 7 9 4 9-4v10l-9 4-9-4V7ZM12 11v10" />
-                      </svg>
-                    </span>
-                    <span class="item-title">Canon EOS R6 camera</span>
-                  </div>
-                </td>
-                <td class="cell-muted">Equipment</td>
-                <td class="cell-qty text-center qty-normal">3</td>
-                <td class="cell-muted text-center">2</td>
-                <td class="cell-muted">units</td>
-                <td><span class="inventory-status inventory-status-in-use">In Use</span></td>
-                <td class="cell-view">
-                  <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
-                    <circle cx="12" cy="12" r="2.5" />
-                  </svg>
-                </td>
-              </tr>
-
-              <!-- Row 4: Available -->
-              <tr>
-                <td class="cell-id">EQP-0012</td>
-                <td>
-                  <div class="item-name-cell">
-                    <span class="item-box-icon">
-                      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="m3 7 9-4 9 4-9 4-9-4Z" />
-                        <path d="m3 7 9 4 9-4v10l-9 4-9-4V7ZM12 11v10" />
-                      </svg>
-                    </span>
-                    <span class="item-title">DNP DS-RX1HS printer</span>
-                  </div>
-                </td>
-                <td class="cell-muted">Equipment</td>
-                <td class="cell-qty text-center qty-normal">5</td>
-                <td class="cell-muted text-center">3</td>
-                <td class="cell-muted">units</td>
-                <td><span class="inventory-status inventory-status-available">Available</span></td>
-                <td class="cell-view">
-                  <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
-                    <circle cx="12" cy="12" r="2.5" />
-                  </svg>
-                </td>
-              </tr>
-
-              <!-- Row 5: Maintenance -->
-              <tr>
-                <td class="cell-id">EQP-0021</td>
-                <td>
-                  <div class="item-name-cell">
-                    <span class="item-box-icon">
-                      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="m3 7 9-4 9 4-9 4-9-4Z" />
-                        <path d="m3 7 9 4 9-4v10l-9 4-9-4V7ZM12 11v10" />
-                      </svg>
-                    </span>
-                    <span class="item-title">Godox softbox lighting kit</span>
-                  </div>
-                </td>
-                <td class="cell-muted">Equipment</td>
-                <td class="cell-qty text-center qty-alert">2</td>
-                <td class="cell-muted text-center">2</td>
-                <td class="cell-muted">sets</td>
-                <td><span class="inventory-status inventory-status-maintenance">Maintenance</span></td>
-                <td class="cell-view">
-                  <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
-                    <circle cx="12" cy="12" r="2.5" />
-                  </svg>
-                </td>
-              </tr>
-
-              <!-- Row 6: Damaged -->
-              <tr>
-                <td class="cell-id">EQP-0027</td>
-                <td>
-                  <div class="item-name-cell">
-                    <span class="item-box-icon">
-                      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="m3 7 9-4 9 4-9 4-9-4Z" />
-                        <path d="m3 7 9 4 9-4v10l-9 4-9-4V7ZM12 11v10" />
-                      </svg>
-                    </span>
-                    <span class="item-title">Portable touch display</span>
-                  </div>
-                </td>
-                <td class="cell-muted">Equipment</td>
-                <td class="cell-qty text-center qty-alert">1</td>
-                <td class="cell-muted text-center">1</td>
-                <td class="cell-muted">units</td>
-                <td><span class="inventory-status inventory-status-damaged">Damaged</span></td>
-                <td class="cell-view">
-                  <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
-                    <circle cx="12" cy="12" r="2.5" />
-                  </svg>
-                </td>
-              </tr>
-
-              <!-- Row 7: Rented -->
-              <tr>
-                <td class="cell-id">CST-0035</td>
-                <td>
-                  <div class="item-name-cell">
-                    <span class="item-box-icon">
-                      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="m3 7 9-4 9 4-9 4-9-4Z" />
-                        <path d="m3 7 9 4 9-4v10l-9 4-9-4V7ZM12 11v10" />
-                      </svg>
-                    </span>
-                    <span class="item-title">1970s disco costume set</span>
-                  </div>
-                </td>
-                <td class="cell-muted">Rental Costumes</td>
-                <td class="cell-qty text-center qty-normal">12</td>
-                <td class="cell-muted text-center">5</td>
-                <td class="cell-muted">pieces</td>
-                <td><span class="inventory-status inventory-status-rented">Rented</span></td>
-                <td class="cell-view">
-                  <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
-                    <circle cx="12" cy="12" r="2.5" />
-                  </svg>
-                </td>
-              </tr>
-
-              <!-- Row 8: Available -->
-              <tr>
-                <td class="cell-id">CST-0042</td>
-                <td>
-                  <div class="item-name-cell">
-                    <span class="item-box-icon">
-                      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="m3 7 9-4 9 4-9 4-9-4Z" />
-                        <path d="m3 7 9 4 9-4v10l-9 4-9-4V7ZM12 11v10" />
-                      </svg>
-                    </span>
-                    <span class="item-title">Victorian accessories set</span>
-                  </div>
-                </td>
-                <td class="cell-muted">Rental Costumes</td>
-                <td class="cell-qty text-center qty-normal">18</td>
-                <td class="cell-muted text-center">6</td>
-                <td class="cell-muted">pieces</td>
-                <td><span class="inventory-status inventory-status-available">Available</span></td>
-                <td class="cell-view">
-                  <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
-                    <circle cx="12" cy="12" r="2.5" />
-                  </svg>
-                </td>
-              </tr>
-
-              <!-- Row 9: Maintenance -->
-              <tr>
-                <td class="cell-id">CST-0048</td>
-                <td>
-                  <div class="item-name-cell">
-                    <span class="item-box-icon">
-                      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="m3 7 9-4 9 4-9 4-9-4Z" />
-                        <path d="m3 7 9 4 9-4v10l-9 4-9-4V7ZM12 11v10" />
-                      </svg>
-                    </span>
-                    <span class="item-title">Classic flapper dress set</span>
-                  </div>
-                </td>
-                <td class="cell-muted">Rental Costumes</td>
-                <td class="cell-qty text-center qty-normal">6</td>
-                <td class="cell-muted text-center">4</td>
-                <td class="cell-muted">pieces</td>
-                <td><span class="inventory-status inventory-status-maintenance">Maintenance</span></td>
-                <td class="cell-view">
-                  <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
-                    <circle cx="12" cy="12" r="2.5" />
-                  </svg>
-                </td>
-              </tr>
+            <tbody id="inventoryTableBody">
+                <tr>
+                    <td colspan="8" class="text-center">
+                        Loading inventory...
+                    </td>
+                </tr>
             </tbody>
           </table>
 
@@ -459,14 +231,14 @@
           <p class="font-display inv-modal-title">Add Inventory Item</p>
           <p class="inv-modal-subtitle">Register a new supply, equipment, or costume asset.</p>
         </div>
-        <button type="button" class="inv-icon-close" aria-label="Close form">
+        <button type="button" id="closeAddItemModalBtn" class="inv-icon-close" aria-label="Close form">
           <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
             <path d="m6 6 12 12M18 6 6 18" />
           </svg>
         </button>
       </div>
 
-      <form class="inv-modal-form">
+      <form class="inv-modal-form" id="addItemForm">
         <div class="inv-form-grid">
           <label class="col-span-2">
             <span class="inv-field-label">Item name</span>
@@ -475,10 +247,8 @@
 
           <label>
             <span class="inv-field-label">Category</span>
-            <select name="category" class="inv-field-input">
-              <option>Consumable Supplies</option>
-              <option>Equipment</option>
-              <option>Rental Costumes</option>
+            <select name="category" id="addItemCategory" class="inv-field-input" required>
+              <option value="">Loading categories...</option>
             </select>
           </label>
 
@@ -491,6 +261,19 @@
               <option>sets</option>
               <option>pieces</option>
             </select>
+          </label>
+
+          <label>
+              <span class="inv-field-label">Unit Cost (₱)</span>
+              <input
+                  name="unit_cost"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value="0"
+                  class="inv-field-input"
+                  required
+              />
           </label>
 
           <label>
@@ -510,7 +293,9 @@
         </div>
 
         <div class="inv-modal-footer">
-          <button type="button" class="inv-btn-secondary">Cancel</button>
+          <button type="button" class="inv-btn-secondary" id="cancelAddItemBtn">
+              Cancel
+          </button>
           <button type="submit" class="primary-btn">
             <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 5v14M5 12h14" />
@@ -694,5 +479,6 @@
     </div>
   </div>
   <script type="module" src="../js/sidebar.js"></script>
+  <script type="module" src="../js/inventory.js"></script>
 </body>
 </html>
