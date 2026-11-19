@@ -22,40 +22,26 @@
     <div class="main-wrapper">
       <!-- Top Header -->
       <header class="top-header">
-        <div class="search-box">
-          <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7">
-            <circle cx="11" cy="11" r="7" />
-            <path d="m20 20-4-4" />
-          </svg>
-          <input type="text" placeholder="Search inventory, requisitions..." aria-label="Search" />
-          <kbd class="search-kbd">⌘ K</kbd>
-        </div>
+          <div class="header-actions">
+            <button type="button" class="user-profile-btn">
+                <div class="user-avatar" id="loggedInUserAvatar">--</div>
 
-        <div class="header-actions">
-          <div class="notif-wrapper">
-            <button id="notif-btn" class="notif-btn" aria-label="Notifications">
-              <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7">
-                <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z" />
-                <path d="M10 21h4" />
-              </svg>
-              <span class="notif-badge"></span>
+                <div>
+                    <p class="user-name" id="loggedInUserName">Loading...</p>
+                    <p class="user-role" id="loggedInUserRole">Please wait</p>
+                </div>
+
+                <svg class="user-chevron" aria-hidden="true"
+                    fill="none" height="16" viewBox="0 0 24 24"
+                    width="16" stroke="currentColor"
+                    stroke-linecap="round" stroke-linejoin="round"
+                    stroke-width="1.7">
+                    <path d="m8 10 4 4 4-4" />
+                </svg>
             </button>
           </div>
-
-          <span class="header-divider"></span>
-
-          <button class="user-profile-btn">
-            <div class="user-avatar">SF</div>
-            <div>
-              <p class="user-name">Sari Febriani</p>
-              <p class="user-role">Operations Manager</p>
-            </div>
-            <svg class="user-chevron" aria-hidden="true" fill="none" height="16" viewBox="0 0 24 24" width="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7">
-              <path d="m8 10 4 4 4-4" />
-            </svg>
-          </button>
-        </div>
       </header>
+
 
       <!-- Main Content -->
       <main class="main-content">
@@ -307,6 +293,94 @@
     </div>
   </div>
 
+<!-- ==========================================
+     MODAL: EDIT INVENTORY ITEM
+=========================================== -->
+<div class="inv-modal-backdrop hidden" id="editItemModal">
+    <div class="inv-modal-box">
+        <div class="inv-modal-header">
+            <div>
+                <p class="font-display inv-modal-title">Edit Inventory Item</p>
+                <p class="inv-modal-subtitle">Update the selected inventory item's information.</p>
+            </div>
+
+            <button type="button" id="closeEditItemModalBtn"
+                class="inv-icon-close" aria-label="Close form">
+                <svg aria-hidden="true" width="17" height="17"
+                    viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.7"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m6 6 12 12M18 6 6 18" />
+                </svg>
+            </button>
+        </div>
+
+        <form class="inv-modal-form" id="editItemForm">
+            <input type="hidden" name="item_id" id="editItemId">
+
+            <div class="inv-form-grid">
+                <label class="col-span-2">
+                    <span class="inv-field-label">Item name</span>
+                    <input name="name" id="editItemName"
+                        class="inv-field-input" required>
+                </label>
+
+                <label>
+                    <span class="inv-field-label">Category</span>
+                    <select name="category" id="editItemCategory"
+                        class="inv-field-input" required>
+                        <option value="">Loading categories...</option>
+                    </select>
+                </label>
+
+                <label>
+                    <span class="inv-field-label">Unit</span>
+                    <select name="unit" id="editItemUnit"
+                        class="inv-field-input" required>
+                        <option>units</option>
+                        <option>boxes</option>
+                        <option>rolls</option>
+                        <option>sets</option>
+                        <option>pieces</option>
+                    </select>
+                </label>
+
+                <label>
+                    <span class="inv-field-label">Unit Cost (₱)</span>
+                    <input name="unit_cost" id="editItemCost"
+                        type="number" min="0" step="0.01"
+                        class="inv-field-input" required>
+                </label>
+
+                <label>
+                    <span class="inv-field-label">Minimum stock</span>
+                    <input name="minimum" id="editItemMinimum"
+                        type="number" min="0"
+                        class="inv-field-input" required>
+                </label>
+
+                <label class="col-span-2">
+                    <span class="inv-field-label">Description</span>
+                    <textarea name="description" id="editItemDescription"
+                        rows="3" class="inv-field-input inv-textarea"
+                        required></textarea>
+                </label>
+            </div>
+
+            <div class="inv-modal-footer">
+                <button type="button" class="inv-btn-secondary"
+                    id="cancelEditItemBtn">
+                    Cancel
+                </button>
+
+                <button type="submit" class="primary-btn">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
   <!-- ==========================================
        DRAWER: ITEM DETAILS (Hidden by default)
   =========================================== -->
@@ -315,8 +389,8 @@
       <div class="inv-drawer-header">
         <div>
           <p class="inv-drawer-kicker">Inventory item</p>
-          <p class="font-display inv-drawer-title">Premium photo paper 4 × 6</p>
-          <p class="inv-drawer-id">CON-0018</p>
+          <p class="font-display inv-drawer-title" id="drawerItemName">Loading...</p>
+          <p class="inv-drawer-id" id="drawerItemId">Loading...</p>
         </div>
         <button type="button" class="inv-drawer-close" aria-label="Close details">
           <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
@@ -329,33 +403,40 @@
         <div class="inv-avail-box">
           <div>
             <p class="inv-avail-label">Current availability</p>
-            <p class="font-display inv-avail-qty">8 <span class="inv-avail-unit">boxes</span></p>
+            <p class="font-display inv-avail-qty">
+                <span id="drawerAvailableStock">0</span>
+                <span class="inv-avail-unit" id="drawerItemUnit">units</span>
+            </p>
           </div>
-          <span class="inventory-status inventory-status-low-stock">Low Stock</span>
+          <span class="inventory-status" id="drawerItemStatus">Loading...</span>
         </div>
 
         <div class="inv-meta-grid">
           <div>
-            <p class="inv-field-label">Category</p>
-            <p class="inv-meta-val">Consumable Supplies</p>
+              <p class="inv-field-label">Category</p>
+              <p class="inv-meta-val" id="drawerItemCategory">-</p>
           </div>
+
           <div>
-            <p class="inv-field-label">Minimum stock</p>
-            <p class="inv-meta-val">20 boxes</p>
+              <p class="inv-field-label">Minimum stock</p>
+              <p class="inv-meta-val" id="drawerMinimumStock">-</p>
           </div>
+
           <div>
-            <p class="inv-field-label">Location</p>
-            <p class="inv-meta-val">Main Store · Shelf A2</p>
+              <p class="inv-field-label">Unit cost</p>
+              <p class="inv-meta-val" id="drawerUnitCost">-</p>
           </div>
+
           <div>
-            <p class="inv-field-label">Condition</p>
-            <p class="inv-meta-val">Not applicable</p>
+              <p class="inv-field-label">Total stock</p>
+              <p class="inv-meta-val" id="drawerTotalStock">-</p>
           </div>
+
           <div class="col-span-2">
-            <p class="inv-field-label">Description</p>
-            <p class="inv-meta-desc">Glossy dye-sublimation photo paper for DNP event printers.</p>
+              <p class="inv-field-label">Description</p>
+              <p class="inv-meta-desc" id="drawerItemDescription">-</p>
           </div>
-        </div>
+      </div>
 
         <div class="inv-history-section">
           <div class="inv-history-head">
@@ -371,38 +452,8 @@
             </div>
           </div>
 
-          <div class="inv-movement-list">
-            <div class="inv-movement-row">
-              <span class="inv-move-badge outgoing">
-                <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M12 20V4m-6 6 6-6 6 6" />
-                </svg>
-              </span>
-              <div class="inv-move-info">
-                <div class="inv-move-top">
-                  <p class="inv-move-type">Outgoing · 12 boxes</p>
-                  <p class="inv-move-date">28 May 2025</p>
-                </div>
-                <p class="inv-move-reason">Weekend wedding events</p>
-                <p class="inv-move-by">Recorded by Alya Putri</p>
-              </div>
-            </div>
-
-            <div class="inv-movement-row">
-              <span class="inv-move-badge incoming">
-                <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M12 4v16m-6-6 6 6 6-6" />
-                </svg>
-              </span>
-              <div class="inv-move-info">
-                <div class="inv-move-top">
-                  <p class="inv-move-type">Incoming · 30 boxes</p>
-                  <p class="inv-move-date">20 May 2025</p>
-                </div>
-                <p class="inv-move-reason">Monthly replenishment</p>
-                <p class="inv-move-by">Recorded by Dimas Arta</p>
-              </div>
-            </div>
+          <div class="inv-movement-list" id="drawerMovementList">
+              <p class="inv-history-sub">Loading inventory history...</p>
           </div>
         </div>
       </div>
@@ -421,63 +472,108 @@
     </aside>
   </div>
 
-  <!-- ==========================================
-       MODAL 2: ADJUST STOCK (Hidden by default)
-  =========================================== -->
-  <div class="inv-adjust-backdrop hidden" id="adjustStockModal">
-    <div class="inv-adjust-box">
-      <div class="inv-adjust-header">
-        <div>
-          <p class="font-display inv-adjust-title">Adjust Stock</p>
-          <p class="inv-adjust-sub">CON-0018 · Premium photo paper 4 × 6</p>
-        </div>
-        <button type="button" class="inv-drawer-close" aria-label="Close adjustment">
-          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-            <path d="m6 6 12 12M18 6 6 18" />
-          </svg>
+  
+<!-- ==========================================
+     MODAL 2: ADJUST STOCK
+=========================================== -->
+<div class="inv-adjust-backdrop hidden" id="adjustStockModal">
+  <div class="inv-adjust-box">
+
+    <div class="inv-adjust-header">
+      <div>
+        <p class="font-display inv-adjust-title">Adjust Stock</p>
+        <p class="inv-adjust-sub" id="adjustStockItemName">
+          Select an inventory item
+        </p>
+      </div>
+
+      <button type="button"
+        class="inv-drawer-close"
+        id="closeAdjustStockBtn"
+        aria-label="Close adjustment">
+        <svg aria-hidden="true" width="18" height="18"
+          viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="1.7"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="m6 6 12 12M18 6 6 18" />
+        </svg>
+      </button>
+    </div>
+
+    <form id="adjustStockForm">
+
+      <input type="hidden" name="item_id" id="adjustStockItemId">
+
+      <div class="inv-toggle-group">
+        <button type="button"
+          class="inv-toggle-btn active"
+          data-adjustment-type="Incoming">
+          Incoming
+        </button>
+
+        <button type="button"
+          class="inv-toggle-btn"
+          data-adjustment-type="Outgoing">
+          Outgoing
         </button>
       </div>
 
-      <form>
-        <div class="inv-toggle-group">
-          <button type="button" class="inv-toggle-btn active">
-            <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 4v16m-6-6 6 6 6-6" />
-            </svg>
-            Incoming
-          </button>
-          <button type="button" class="inv-toggle-btn">
-            <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 20V4m-6 6 6-6 6 6" />
-            </svg>
-            Outgoing
-          </button>
-        </div>
+      <input type="hidden"
+        name="adjustment_type"
+        id="adjustmentType"
+        value="Incoming">
 
-        <div class="inv-form-grid">
-          <label>
-            <span class="inv-field-label">Quantity</span>
-            <input name="quantity" type="number" min="1" value="1" class="inv-field-input" required />
-          </label>
+      <div class="inv-form-grid">
 
-          <div>
-            <span class="inv-field-label">Current stock</span>
-            <div class="inv-readonly-box">8 boxes</div>
+        <label>
+          <span class="inv-field-label">Quantity</span>
+          <input
+            name="quantity"
+            id="adjustStockQuantity"
+            type="number"
+            min="1"
+            step="1"
+            class="inv-field-input"
+            placeholder="Enter quantity"
+            required>
+        </label>
+
+        <div>
+          <span class="inv-field-label">Current stock</span>
+          <div class="inv-readonly-box"
+            id="adjustStockCurrent">
+            0
           </div>
-
-          <label class="col-span-2">
-            <span class="inv-field-label">Reason</span>
-            <textarea name="reason" rows="3" class="inv-field-input inv-textarea" placeholder="Purchase delivery, return, transfer..." required></textarea>
-          </label>
         </div>
 
-        <div class="inv-adjust-footer">
-          <button type="button" class="inv-btn-text">Cancel</button>
-          <button type="submit" class="primary-btn">Record Adjustment</button>
-        </div>
-      </form>
-    </div>
+        <label class="col-span-2">
+          <span class="inv-field-label">Reason</span>
+          <textarea
+            name="reason"
+            id="adjustStockReason"
+            rows="3"
+            class="inv-field-input inv-textarea"
+            placeholder="Explain why this adjustment is needed..."
+            required></textarea>
+        </label>
+
+      </div>
+
+      <div class="inv-adjust-footer">
+        <button type="button"
+          class="inv-btn-text"
+          id="cancelAdjustStockBtn">
+          Cancel
+        </button>
+
+        <button type="submit" class="primary-btn">
+          Record Adjustment
+        </button>
+      </div>
+
+    </form>
   </div>
+</div>
   <script type="module" src="../js/sidebar.js"></script>
   <script type="module" src="../js/inventory.js"></script>
 </body>

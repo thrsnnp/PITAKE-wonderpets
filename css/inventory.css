@@ -2,6 +2,13 @@
    PITAKE INVENTORY MANAGEMENT
    (Pairs with sidebar.css & dashboard.css)
 ======================================== */
+.top-header {
+  justify-content: flex-end;
+}
+
+.header-actions {
+  margin-left: auto;
+}
 
 /* Stat Cards Compact Variant */
 .inv-stats-grid {
@@ -188,14 +195,35 @@
   padding-right: 8px;
 }
 
-.w-id { width: 12%; }
-.w-name { width: 23%; }
-.w-cat { width: 17%; }
-.w-qty { width: 13%; }
-.w-min { width: 12%; }
-.w-unit { width: 8%; }
-.w-status { width: 11%; }
-.w-view { width: 4%; }
+.view-item-btn,
+.edit-item-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  color: #9b877f;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.view-item-btn svg,
+.edit-item-btn svg {
+  display: block;
+  flex-shrink: 0;
+  overflow: visible;
+}
+
+.view-item-btn:hover,
+.edit-item-btn:hover {
+  background-color: rgba(139, 94, 60, 0.1);
+  color: #5b2633;
+}
 
 .text-center {
   text-align: center;
@@ -222,12 +250,38 @@
 
 .inv-table td {
   padding: 14px 12px;
+  vertical-align: middle;
 }
 
 .cell-id {
   padding-left: 16px !important;
   font-weight: 700;
   color: #7d4e3a;
+}
+
+.item-id-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.view-item-btn,
+.edit-item-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  color: #9b877f;
+  flex-shrink: 0;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.view-item-btn:hover,
+.edit-item-btn:hover {
+  background-color: rgba(139, 94, 60, 0.1);
+  color: #5b2633;
 }
 
 .item-name-cell {
@@ -271,9 +325,11 @@
   color: #4d3a3c;
 }
 
-.cell-view {
-  padding-right: 8px !important;
-  color: #9b877f;
+.inv-table th.w-view,
+.inv-table td.cell-view {
+  text-align: center;
+  padding-left: 4px;
+  padding-right: 12px;
 }
 
 /* Inventory Status Badges */
@@ -828,4 +884,37 @@
   font-size: 11px;
   font-weight: 600;
   color: #765c52;
+}
+
+/* Inventory Action Buttons */
+.inventory-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.inventory-actions button {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid #e5e7eb;
+    border-radius: 7px;
+    background: white;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.inventory-actions .adjust-stock-btn:hover {
+    background: #f0fdf4;
+    color: #15803d;
+    border-color: #86efac;
+}
+
+.inventory-actions .edit-item-btn:hover {
+    background: #eff6ff;
+    color: #2563eb;
+    border-color: #93c5fd;
 }
