@@ -22,26 +22,25 @@
     <div class="main-wrapper">
       <!-- Top Header -->
       <header class="top-header">
-          <div class="header-actions">
-            <button type="button" class="user-profile-btn">
-                <div class="user-avatar" id="loggedInUserAvatar">--</div>
+        <div class="header-actions">
+          <button type="button" class="user-profile-btn">
+            <div class="user-avatar" id="loggedInUserAvatar">--</div>
 
-                <div>
-                    <p class="user-name" id="loggedInUserName">Loading...</p>
-                    <p class="user-role" id="loggedInUserRole">Please wait</p>
-                </div>
+            <div>
+              <p class="user-name" id="loggedInUserName">Loading...</p>
+              <p class="user-role" id="loggedInUserRole">Please wait</p>
+            </div>
 
-                <svg class="user-chevron" aria-hidden="true"
-                    fill="none" height="16" viewBox="0 0 24 24"
-                    width="16" stroke="currentColor"
-                    stroke-linecap="round" stroke-linejoin="round"
-                    stroke-width="1.7">
-                    <path d="m8 10 4 4 4-4" />
-                </svg>
-            </button>
-          </div>
+            <svg class="user-chevron" aria-hidden="true"
+              fill="none" height="16" viewBox="0 0 24 24"
+              width="16" stroke="currentColor"
+              stroke-linecap="round" stroke-linejoin="round"
+              stroke-width="1.7">
+              <path d="m8 10 4 4 4-4" />
+            </svg>
+          </button>
+        </div>
       </header>
-
 
       <!-- Main Content -->
       <main class="main-content">
@@ -103,23 +102,23 @@
         <section class="table-card">
           <!-- Category Tabs -->
           <div class="inv-tabs-bar">
-              <div class="inv-tabs-list">
-                  <button type="button" class="inv-tab active" data-category-id="">
-                      All Inventory
-                  </button>
+            <div class="inv-tabs-list">
+              <button type="button" class="inv-tab active" data-category-id="">
+                All Inventory
+              </button>
 
-                  <button type="button" class="inv-tab" data-category-id="1">
-                      Consumable Supplies
-                  </button>
+              <button type="button" class="inv-tab" data-category-id="1">
+                Consumable Supplies
+              </button>
 
-                  <button type="button" class="inv-tab" data-category-id="2">
-                      Equipment
-                  </button>
+              <button type="button" class="inv-tab" data-category-id="2">
+                Equipment
+              </button>
 
-                  <button type="button" class="inv-tab" data-category-id="3">
-                      Rental Costumes
-                  </button>
-              </div>
+              <button type="button" class="inv-tab" data-category-id="3">
+                Rental Costumes
+              </button>
+            </div>
           </div>
 
           <!-- Search & Filter Toolbar -->
@@ -130,22 +129,22 @@
                 <path d="m20 20-4-4" />
               </svg>
               <input
-                  type="text"
-                  id="inventorySearchInput"
-                  class="inv-search-input"
-                  placeholder="Search item name or ID..."
-                  aria-label="Search item name or ID"
-              />           
+                type="text"
+                id="inventorySearchInput"
+                class="inv-search-input"
+                placeholder="Search item name or ID..."
+                aria-label="Search item name or ID"
+              />
             </div>
 
             <div class="inv-filters">
               <div class="inv-select-wrap">
-               <select
+                <select
                   class="inv-select"
                   id="inventoryCategoryFilter"
                   aria-label="Filter by category">
                   <option value="">All categories</option>
-              </select>
+                </select>
                 <span class="inv-select-icon">
                   <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
                     <path d="m8 10 4 4 4-4" />
@@ -159,6 +158,7 @@
                   <option value="In Stock">In Stock</option>
                   <option value="Low Stock">Low Stock</option>
                   <option value="Out of Stock">Out of Stock</option>
+                  <option value="Inactive">Inactive</option>
                 </select>
                 <span class="inv-select-icon">
                   <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
@@ -180,27 +180,38 @@
                 <th class="w-min text-center">Minimum Stock</th>
                 <th class="w-unit">Unit</th>
                 <th class="w-status">Status</th>
-                <th class="w-view"><span class="sr-only">View</span></th>
+                <th class="w-view"><span class="sr-only">Actions</span></th>
               </tr>
             </thead>
             <tbody id="inventoryTableBody">
-                <tr>
-                    <td colspan="8" class="text-center">
-                        Loading inventory...
-                    </td>
-                </tr>
+              <tr>
+                <td colspan="8" class="text-center">
+                  Loading inventory...
+                </td>
+              </tr>
             </tbody>
           </table>
 
+         
           <!-- Pagination Footer -->
           <div class="inv-pagination">
-            <p>Showing 9 of 1,248 inventory items</p>
-            <div class="inv-page-buttons">
-              <button class="inv-page-btn">Previous</button>
-              <button class="inv-page-btn active">1</button>
-              <button class="inv-page-btn">2</button>
-              <button class="inv-page-btn">Next</button>
-            </div>
+              <p id="inventoryPaginationInfo">
+                  Showing 0 of 0 inventory items
+              </p>
+
+              <div class="inv-page-buttons" id="inventoryPaginationButtons">
+                  <button type="button" class="inv-page-btn" disabled>
+                      Previous
+                  </button>
+
+                  <button type="button" class="inv-page-btn active">
+                      1
+                  </button>
+
+                  <button type="button" class="inv-page-btn" disabled>
+                      Next
+                  </button>
+              </div>
           </div>
         </section>
       </main>
@@ -250,16 +261,16 @@
           </label>
 
           <label>
-              <span class="inv-field-label">Unit Cost (₱)</span>
-              <input
-                  name="unit_cost"
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value="0"
-                  class="inv-field-input"
-                  required
-              />
+            <span class="inv-field-label">Unit Cost (₱)</span>
+            <input
+              name="unit_cost"
+              type="number"
+              min="0"
+              step="0.01"
+              value="0"
+              class="inv-field-input"
+              required
+            />
           </label>
 
           <label>
@@ -280,7 +291,7 @@
 
         <div class="inv-modal-footer">
           <button type="button" class="inv-btn-secondary" id="cancelAddItemBtn">
-              Cancel
+            Cancel
           </button>
           <button type="submit" class="primary-btn">
             <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
@@ -293,93 +304,93 @@
     </div>
   </div>
 
-<!-- ==========================================
-     MODAL: EDIT INVENTORY ITEM
-=========================================== -->
-<div class="inv-modal-backdrop hidden" id="editItemModal">
+  <!-- ==========================================
+       MODAL: EDIT INVENTORY ITEM
+  =========================================== -->
+  <div class="inv-modal-backdrop hidden" id="editItemModal">
     <div class="inv-modal-box">
-        <div class="inv-modal-header">
-            <div>
-                <p class="font-display inv-modal-title">Edit Inventory Item</p>
-                <p class="inv-modal-subtitle">Update the selected inventory item's information.</p>
-            </div>
-
-            <button type="button" id="closeEditItemModalBtn"
-                class="inv-icon-close" aria-label="Close form">
-                <svg aria-hidden="true" width="17" height="17"
-                    viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="1.7"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <path d="m6 6 12 12M18 6 6 18" />
-                </svg>
-            </button>
+      <div class="inv-modal-header">
+        <div>
+          <p class="font-display inv-modal-title">Edit Inventory Item</p>
+          <p class="inv-modal-subtitle">Update the selected inventory item's information.</p>
         </div>
 
-        <form class="inv-modal-form" id="editItemForm">
-            <input type="hidden" name="item_id" id="editItemId">
+        <button type="button" id="closeEditItemModalBtn"
+          class="inv-icon-close" aria-label="Close form">
+          <svg aria-hidden="true" width="17" height="17"
+            viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="1.7"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="m6 6 12 12M18 6 6 18" />
+          </svg>
+        </button>
+      </div>
 
-            <div class="inv-form-grid">
-                <label class="col-span-2">
-                    <span class="inv-field-label">Item name</span>
-                    <input name="name" id="editItemName"
-                        class="inv-field-input" required>
-                </label>
+      <form class="inv-modal-form" id="editItemForm">
+        <input type="hidden" name="item_id" id="editItemId">
 
-                <label>
-                    <span class="inv-field-label">Category</span>
-                    <select name="category" id="editItemCategory"
-                        class="inv-field-input" required>
-                        <option value="">Loading categories...</option>
-                    </select>
-                </label>
+        <div class="inv-form-grid">
+          <label class="col-span-2">
+            <span class="inv-field-label">Item name</span>
+            <input name="name" id="editItemName"
+              class="inv-field-input" required>
+          </label>
 
-                <label>
-                    <span class="inv-field-label">Unit</span>
-                    <select name="unit" id="editItemUnit"
-                        class="inv-field-input" required>
-                        <option>units</option>
-                        <option>boxes</option>
-                        <option>rolls</option>
-                        <option>sets</option>
-                        <option>pieces</option>
-                    </select>
-                </label>
+          <label>
+            <span class="inv-field-label">Category</span>
+            <select name="category" id="editItemCategory"
+              class="inv-field-input" required>
+              <option value="">Loading categories...</option>
+            </select>
+          </label>
 
-                <label>
-                    <span class="inv-field-label">Unit Cost (₱)</span>
-                    <input name="unit_cost" id="editItemCost"
-                        type="number" min="0" step="0.01"
-                        class="inv-field-input" required>
-                </label>
+          <label>
+            <span class="inv-field-label">Unit</span>
+            <select name="unit" id="editItemUnit"
+              class="inv-field-input" required>
+              <option>units</option>
+              <option>boxes</option>
+              <option>rolls</option>
+              <option>sets</option>
+              <option>pieces</option>
+            </select>
+          </label>
 
-                <label>
-                    <span class="inv-field-label">Minimum stock</span>
-                    <input name="minimum" id="editItemMinimum"
-                        type="number" min="0"
-                        class="inv-field-input" required>
-                </label>
+          <label>
+            <span class="inv-field-label">Unit Cost (₱)</span>
+            <input name="unit_cost" id="editItemCost"
+              type="number" min="0" step="0.01"
+              class="inv-field-input" required>
+          </label>
 
-                <label class="col-span-2">
-                    <span class="inv-field-label">Description</span>
-                    <textarea name="description" id="editItemDescription"
-                        rows="3" class="inv-field-input inv-textarea"
-                        required></textarea>
-                </label>
-            </div>
+          <label>
+            <span class="inv-field-label">Minimum stock</span>
+            <input name="minimum" id="editItemMinimum"
+              type="number" min="0"
+              class="inv-field-input" required>
+          </label>
 
-            <div class="inv-modal-footer">
-                <button type="button" class="inv-btn-secondary"
-                    id="cancelEditItemBtn">
-                    Cancel
-                </button>
+          <label class="col-span-2">
+            <span class="inv-field-label">Description</span>
+            <textarea name="description" id="editItemDescription"
+              rows="3" class="inv-field-input inv-textarea"
+              required></textarea>
+          </label>
+        </div>
 
-                <button type="submit" class="primary-btn">
-                    Save Changes
-                </button>
-            </div>
-        </form>
+        <div class="inv-modal-footer">
+          <button type="button" class="inv-btn-secondary"
+            id="cancelEditItemBtn">
+            Cancel
+          </button>
+
+          <button type="submit" class="primary-btn">
+            Save Changes
+          </button>
+        </div>
+      </form>
     </div>
-</div>
+  </div>
 
   <!-- ==========================================
        DRAWER: ITEM DETAILS (Hidden by default)
@@ -404,8 +415,8 @@
           <div>
             <p class="inv-avail-label">Current availability</p>
             <p class="font-display inv-avail-qty">
-                <span id="drawerAvailableStock">0</span>
-                <span class="inv-avail-unit" id="drawerItemUnit">units</span>
+              <span id="drawerAvailableStock">0</span>
+              <span class="inv-avail-unit" id="drawerItemUnit">units</span>
             </p>
           </div>
           <span class="inventory-status" id="drawerItemStatus">Loading...</span>
@@ -413,30 +424,35 @@
 
         <div class="inv-meta-grid">
           <div>
-              <p class="inv-field-label">Category</p>
-              <p class="inv-meta-val" id="drawerItemCategory">-</p>
+            <p class="inv-field-label">Category</p>
+            <p class="inv-meta-val" id="drawerItemCategory">-</p>
           </div>
 
           <div>
-              <p class="inv-field-label">Minimum stock</p>
-              <p class="inv-meta-val" id="drawerMinimumStock">-</p>
+            <p class="inv-field-label">Minimum stock</p>
+            <p class="inv-meta-val" id="drawerMinimumStock">-</p>
           </div>
 
           <div>
-              <p class="inv-field-label">Unit cost</p>
-              <p class="inv-meta-val" id="drawerUnitCost">-</p>
+            <p class="inv-field-label">Unit cost</p>
+            <p class="inv-meta-val" id="drawerUnitCost">-</p>
           </div>
 
           <div>
-              <p class="inv-field-label">Total stock</p>
-              <p class="inv-meta-val" id="drawerTotalStock">-</p>
+            <p class="inv-field-label">Total stock</p>
+            <p class="inv-meta-val" id="drawerTotalStock">-</p>
+          </div>
+
+          <div>
+              <p class="inv-field-label">Reserved stock</p>
+              <p class="inv-meta-val" id="drawerReservedStock">-</p>
           </div>
 
           <div class="col-span-2">
-              <p class="inv-field-label">Description</p>
-              <p class="inv-meta-desc" id="drawerItemDescription">-</p>
+            <p class="inv-field-label">Description</p>
+            <p class="inv-meta-desc" id="drawerItemDescription">-</p>
           </div>
-      </div>
+        </div>
 
         <div class="inv-history-section">
           <div class="inv-history-head">
@@ -453,7 +469,7 @@
           </div>
 
           <div class="inv-movement-list" id="drawerMovementList">
-              <p class="inv-history-sub">Loading inventory history...</p>
+            <p class="inv-history-sub">Loading inventory history...</p>
           </div>
         </div>
       </div>
@@ -472,108 +488,135 @@
     </aside>
   </div>
 
-  
-<!-- ==========================================
-     MODAL 2: ADJUST STOCK
-=========================================== -->
-<div class="inv-adjust-backdrop hidden" id="adjustStockModal">
-  <div class="inv-adjust-box">
-
-    <div class="inv-adjust-header">
-      <div>
-        <p class="font-display inv-adjust-title">Adjust Stock</p>
-        <p class="inv-adjust-sub" id="adjustStockItemName">
-          Select an inventory item
-        </p>
-      </div>
-
-      <button type="button"
-        class="inv-drawer-close"
-        id="closeAdjustStockBtn"
-        aria-label="Close adjustment">
-        <svg aria-hidden="true" width="18" height="18"
-          viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="1.7"
-          stroke-linecap="round" stroke-linejoin="round">
-          <path d="m6 6 12 12M18 6 6 18" />
-        </svg>
-      </button>
-    </div>
-
-    <form id="adjustStockForm">
-
-      <input type="hidden" name="item_id" id="adjustStockItemId">
-
-      <div class="inv-toggle-group">
-        <button type="button"
-          class="inv-toggle-btn active"
-          data-adjustment-type="Incoming">
-          Incoming
-        </button>
-
-        <button type="button"
-          class="inv-toggle-btn"
-          data-adjustment-type="Outgoing">
-          Outgoing
-        </button>
-      </div>
-
-      <input type="hidden"
-        name="adjustment_type"
-        id="adjustmentType"
-        value="Incoming">
-
-      <div class="inv-form-grid">
-
-        <label>
-          <span class="inv-field-label">Quantity</span>
-          <input
-            name="quantity"
-            id="adjustStockQuantity"
-            type="number"
-            min="1"
-            step="1"
-            class="inv-field-input"
-            placeholder="Enter quantity"
-            required>
-        </label>
-
+  <!-- ==========================================
+       MODAL 2: ADJUST STOCK
+  =========================================== -->
+  <div class="inv-adjust-backdrop hidden" id="adjustStockModal">
+    <div class="inv-adjust-box">
+      <div class="inv-adjust-header">
         <div>
-          <span class="inv-field-label">Current stock</span>
-          <div class="inv-readonly-box"
-            id="adjustStockCurrent">
-            0
-          </div>
+          <p class="font-display inv-adjust-title">Adjust Stock</p>
+          <p class="inv-adjust-sub" id="adjustStockItemName">
+            Select an inventory item
+          </p>
         </div>
 
-        <label class="col-span-2">
-          <span class="inv-field-label">Reason</span>
-          <textarea
-            name="reason"
-            id="adjustStockReason"
-            rows="3"
-            class="inv-field-input inv-textarea"
-            placeholder="Explain why this adjustment is needed..."
-            required></textarea>
-        </label>
-
+        <button type="button"
+          class="inv-drawer-close"
+          id="closeAdjustStockBtn"
+          aria-label="Close adjustment">
+          <svg aria-hidden="true" width="18" height="18"
+            viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="1.7"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="m6 6 12 12M18 6 6 18" />
+          </svg>
+        </button>
       </div>
+
+      <form id="adjustStockForm">
+        <input type="hidden" name="item_id" id="adjustStockItemId">
+
+        <div class="inv-toggle-group">
+          <button type="button"
+            class="inv-toggle-btn active"
+            data-adjustment-type="Incoming">
+            Incoming
+          </button>
+
+          <button type="button"
+            class="inv-toggle-btn"
+            data-adjustment-type="Outgoing">
+            Outgoing
+          </button>
+        </div>
+
+        <input type="hidden"
+          name="adjustment_type"
+          id="adjustmentType"
+          value="Incoming">
+
+        <div class="inv-form-grid">
+          <label>
+            <span class="inv-field-label">Quantity</span>
+            <input
+              name="quantity"
+              id="adjustStockQuantity"
+              type="number"
+              min="1"
+              step="1"
+              class="inv-field-input"
+              placeholder="Enter quantity"
+              required>
+          </label>
+
+          <div>
+            <span class="inv-field-label">Current stock</span>
+            <div class="inv-readonly-box"
+              id="adjustStockCurrent">
+              0
+            </div>
+          </div>
+
+          <label class="col-span-2">
+            <span class="inv-field-label">Reason</span>
+            <textarea
+              name="reason"
+              id="adjustStockReason"
+              rows="3"
+              class="inv-field-input inv-textarea"
+              placeholder="Explain why this adjustment is needed..."
+              required></textarea>
+          </label>
+        </div>
+
+        <div class="inv-adjust-footer">
+          <button type="button"
+            class="inv-btn-text"
+            id="cancelAdjustStockBtn">
+            Cancel
+          </button>
+
+          <button type="submit" class="primary-btn">
+            Record Adjustment
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL 3: CONFIRM ACTIVE / INACTIVE STATUS
+  =========================================== -->
+  <div class="inv-adjust-backdrop hidden" id="confirmStatusModal">
+    <div class="inv-adjust-box" style="max-width: 420px;">
+      <div class="inv-adjust-header">
+        <div>
+          <p class="font-display inv-adjust-title" id="confirmStatusTitle">Deactivate Item</p>
+          <p class="inv-adjust-sub" id="confirmStatusItemName">Item name</p>
+        </div>
+        <button type="button" class="inv-drawer-close" id="closeConfirmStatusBtn" aria-label="Close confirmation">
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m6 6 12 12M18 6 6 18" />
+          </svg>
+        </button>
+      </div>
+
+      <p class="inv-meta-desc" id="confirmStatusMessage">
+        Are you sure you want to change this item's status?
+      </p>
 
       <div class="inv-adjust-footer">
-        <button type="button"
-          class="inv-btn-text"
-          id="cancelAdjustStockBtn">
+        <button type="button" class="inv-btn-secondary" id="cancelConfirmStatusBtn">
           Cancel
         </button>
-
-        <button type="submit" class="primary-btn">
-          Record Adjustment
+        <button type="button" class="primary-btn" id="proceedConfirmStatusBtn">
+          Confirm
         </button>
       </div>
-
-    </form>
+    </div>
   </div>
-</div>
+
   <script type="module" src="../js/sidebar.js"></script>
   <script type="module" src="../js/inventory.js"></script>
 </body>

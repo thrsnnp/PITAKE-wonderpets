@@ -1,7 +1,14 @@
 
 import { supabase } from "./supabaseClient.js";
-let inventoryItems = [];
 
+let inventoryItems = [];
+let currentUserRole = null;
+
+let pendingStatusItemId = null;
+let pendingStatusValue = null;
+
+let currentInventoryPage = 1;
+const inventoryItemsPerPage = 10;
 /* ========================================
    PITAKE INVENTORY MANAGEMENT
 ======================================== */
@@ -18,13 +25,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     const inventorySearchInput = document.getElementById("inventorySearchInput");
 
     if (inventorySearchInput) {
-        inventorySearchInput.addEventListener("input", applyInventoryFilters);
+        inventorySearchInput.addEventListener("input", () => {
+            currentInventoryPage = 1;
+            applyInventoryFilters();
+        });
     }
 
     const inventoryCategoryFilter = document.getElementById("inventoryCategoryFilter");
 
     if (inventoryCategoryFilter) {
-        inventoryCategoryFilter.addEventListener("change", applyInventoryFilters);
+        inventoryCategoryFilter.addEventListener("change", () => {
+            currentInventoryPage = 1;
+            applyInventoryFilters();
+        });
     }
 
     const openAddItemBtn = document.getElementById("openAddItemBtn");
@@ -55,7 +68,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const inventoryStatusFilter = document.getElementById("inventoryStatusFilter");
 
     if (inventoryStatusFilter) {
-        inventoryStatusFilter.addEventListener("change", applyInventoryFilters);
+        inventoryStatusFilter.addEventListener("change", () => {
+            currentInventoryPage = 1;
+            applyInventoryFilters();
+        });
     }
 
     const inventoryTabs = document.querySelectorAll(".inv-tab");
@@ -74,6 +90,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
             // Apply all filters
+            currentInventoryPage = 1;
             applyInventoryFilters();
         });
     });
@@ -260,6 +277,121 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
+    // Open Activate / Deactivate Confirmation Modal
+    if (inventoryTableBody) {
+        inventoryTableBody.addEventListener("click", (event) => {
+            const statusButton = event.target.closest(
+                ".toggle-item-status-btn"
+            );
+
+            if (!statusButton) return;
+
+            if (currentUserRole !== "Admin") {
+                alert("Only Admin users can change item status.");
+                return;
+            }
+
+            const itemId = Number(statusButton.dataset.itemId);
+
+            const item = inventoryItems.find(
+                item => Number(item.item_id) === itemId
+            );
+
+            if (!item) {
+                alert("Inventory item not found.");
+                return;
+            }
+
+            pendingStatusItemId = itemId;
+            pendingStatusValue = !item.is_active;
+
+            const modal = document.getElementById("confirmStatusModal");
+
+            document.getElementById("confirmStatusTitle").textContent =
+                pendingStatusValue ? "Activate Item" : "Deactivate Item";
+
+            document.getElementById("confirmStatusItemName").textContent =
+                item.item_name;
+
+            document.getElementById("confirmStatusMessage").textContent =
+                pendingStatusValue
+                    ? "Are you sure you want to activate this item?"
+                    : "Are you sure you want to deactivate this item?";
+
+            document.getElementById("proceedConfirmStatusBtn").textContent =
+                pendingStatusValue ? "Activate" : "Deactivate";
+
+            modal.classList.remove("hidden");
+        });
+    }
+
+    /* ========================================
+    CONFIRM ACTIVATE / DEACTIVATE ITEM
+    ======================================== */
+
+    const confirmStatusModal = document.getElementById("confirmStatusModal");
+    const proceedConfirmStatusBtn = document.getElementById("proceedConfirmStatusBtn");
+
+    function closeConfirmStatusModal() {
+        confirmStatusModal.classList.add("hidden");
+        pendingStatusItemId = null;
+        pendingStatusValue = null;
+    }
+
+    document.getElementById("closeConfirmStatusBtn")
+        ?.addEventListener("click", closeConfirmStatusModal);
+
+    document.getElementById("cancelConfirmStatusBtn")
+        ?.addEventListener("click", closeConfirmStatusModal);
+
+    confirmStatusModal?.addEventListener("click", (event) => {
+        if (event.target === confirmStatusModal) {
+            closeConfirmStatusModal();
+        }
+    });
+
+    proceedConfirmStatusBtn?.addEventListener("click", async () => {
+        if (currentUserRole !== "Admin") {
+            alert("Only Admin users can change item status.");
+            closeConfirmStatusModal();
+            return;
+        }
+
+        if (pendingStatusItemId === null || pendingStatusValue === null) {
+            return;
+        }
+
+        proceedConfirmStatusBtn.disabled = true;
+        proceedConfirmStatusBtn.textContent = "Processing...";
+
+        try {
+            const { error } = await supabase
+                .from("items")
+                .update({ is_active: pendingStatusValue })
+                .eq("item_id", pendingStatusItemId);
+
+            if (error) throw error;
+
+            alert(
+                pendingStatusValue
+                    ? "Item activated successfully!"
+                    : "Item deactivated successfully!"
+            );
+
+            closeConfirmStatusModal();
+
+            await loadInventory();
+            await loadInventoryStats();
+
+        } catch (error) {
+            console.error("Item status update error:", error);
+            alert("Failed to update item status: " + error.message);
+
+        } finally {
+            proceedConfirmStatusBtn.disabled = false;
+            proceedConfirmStatusBtn.textContent = "Confirm";
+        }
+    });
     // Open Adjust Stock modal from Item Details Drawer
     const drawerAdjustButton = document.querySelector(".inv-btn-full");
 
@@ -393,6 +525,25 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
+    // Inventory pagination
+    const paginationButtons = document.getElementById("inventoryPaginationButtons");
+
+    if (paginationButtons) {
+        paginationButtons.addEventListener("click", (event) => {
+            const button = event.target.closest(".inv-page-btn");
+
+            if (!button || button.disabled) return;
+
+            const selectedPage = Number(button.dataset.page);
+
+            if (!selectedPage) return;
+
+            currentInventoryPage = selectedPage;
+
+            applyInventoryFilters();
+        });
+    }
+
 
 });
 
@@ -419,6 +570,8 @@ async function loadLoggedInUserProfile() {
         console.error("Error loading user profile:", error.message);
         return;
     }
+
+    currentUserRole = profile.role;
 
     const fullName = `${profile.first_name} ${profile.last_name}`;
     const initials = `${profile.first_name.charAt(0)}${profile.last_name.charAt(0)}`;
@@ -490,7 +643,6 @@ async function loadInventory() {
                 category_name
             )
         `)
-        .eq("is_active", true)
         .order("item_id");
 
     if (error) {
@@ -584,7 +736,9 @@ function applyInventoryFilters() {
 
         let status = "In Stock";
 
-        if (available <= 0) {
+        if (!item.is_active) {
+            status = "Inactive";
+        } else if (available <= 0) {
             status = "Out of Stock";
         } else if (available <= item.minimum_stock) {
             status = "Low Stock";
@@ -608,11 +762,84 @@ function applyInventoryFilters() {
     renderInventoryTable(filteredItems);
 }
 
+
 function renderInventoryTable(data) {
     const tableBody = document.getElementById("inventoryTableBody");
 
     if (!tableBody) return;
 
+    const paginationInfo = document.getElementById("inventoryPaginationInfo");
+    const paginationButtons = document.getElementById("inventoryPaginationButtons");
+
+    // Pagination calculations
+    const totalItems = data ? data.length : 0;
+
+    const totalPages = Math.max(
+        1,
+        Math.ceil(totalItems / inventoryItemsPerPage)
+    );
+
+    currentInventoryPage = Math.min(currentInventoryPage, totalPages);
+
+    const startIndex = (currentInventoryPage - 1) * inventoryItemsPerPage;
+
+    const endIndex = Math.min(
+        startIndex + inventoryItemsPerPage,
+        totalItems
+    );
+
+    const pageItems = data
+        ? data.slice(startIndex, endIndex)
+        : [];
+
+    // Update pagination information
+    if (paginationInfo) {
+        const showingStart = totalItems === 0 ? 0 : startIndex + 1;
+
+        paginationInfo.textContent =
+            `Showing ${showingStart}-${endIndex} of ${totalItems} inventory items`;
+    }
+
+    // Generate pagination buttons
+    if (paginationButtons) {
+        let buttonsHTML = `
+            <button
+                type="button"
+                class="inv-page-btn"
+                data-page="${currentInventoryPage - 1}"
+                ${currentInventoryPage === 1 ? "disabled" : ""}
+            >
+                Previous
+            </button>
+        `;
+
+        for (let page = 1; page <= totalPages; page++) {
+            buttonsHTML += `
+                <button
+                    type="button"
+                    class="inv-page-btn ${page === currentInventoryPage ? "active" : ""}"
+                    data-page="${page}"
+                >
+                    ${page}
+                </button>
+            `;
+        }
+
+        buttonsHTML += `
+            <button
+                type="button"
+                class="inv-page-btn"
+                data-page="${currentInventoryPage + 1}"
+                ${currentInventoryPage === totalPages ? "disabled" : ""}
+            >
+                Next
+            </button>
+        `;
+
+        paginationButtons.innerHTML = buttonsHTML;
+    }
+
+    // Empty inventory check
     if (!data || data.length === 0) {
         tableBody.innerHTML = `
             <tr>
@@ -624,7 +851,8 @@ function renderInventoryTable(data) {
         return;
     }
 
-    tableBody.innerHTML = data.map(item => {
+    // Render current page only
+    tableBody.innerHTML = pageItems.map(item => {
         const available = item.current_stock - item.reserved_stock;
         const isLowOrOut = available <= item.minimum_stock;
 
@@ -632,7 +860,10 @@ function renderInventoryTable(data) {
         let statusClass = "inventory-status-available";
         let rowClass = "";
 
-        if (available <= 0) {
+        if (!item.is_active) {
+            status = "Inactive";
+            statusClass = "inventory-status-inactive";
+        } else if (available <= 0) {
             status = "Out of Stock";
             statusClass = "inventory-status-out-of-stock";
             rowClass = "row-out-of-stock";
@@ -720,6 +951,7 @@ function renderInventoryTable(data) {
                         <button
                             type="button"
                             class="adjust-stock-btn"
+                            ${!item.is_active ? "disabled" : ""}
                             data-item-id="${item.item_id}"
                             aria-label="Adjust stock for ${escapeHTML(item.item_name)}"
                             title="Adjust Stock"
@@ -740,6 +972,7 @@ function renderInventoryTable(data) {
                         <button
                             type="button"
                             class="edit-item-btn"
+                            ${!item.is_active ? "disabled" : ""}
                             data-item-id="${item.item_id}"
                             aria-label="Edit ${escapeHTML(item.item_name)}"
                             title="Edit Item"
@@ -756,14 +989,25 @@ function renderInventoryTable(data) {
                                 <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z" />
                             </svg>
                         </button>
+
+                        <button
+                            type="button"
+                            class="toggle-item-status-btn ${item.is_active ? "is-active" : "is-inactive"}"
+                            data-item-id="${item.item_id}"
+                            aria-label="${item.is_active ? "Deactivate" : "Activate"} ${escapeHTML(item.item_name)}"
+                            title="${item.is_active ? "Deactivate Item" : "Activate Item"}"
+                        >
+                            ${item.is_active ? "Deactivate" : "Activate"}
+                        </button>
                     </div>
                 </td>
             </tr>
         `;
     }).join("");
 
-    console.log("Inventory table rendered:", data.length, "items");
+    console.log("Inventory table rendered:", pageItems.length, "items");
 }
+
 
 /* ========================================
    VIEW INVENTORY ITEM DETAILS
@@ -784,7 +1028,10 @@ async function openItemDetails(itemId) {
     let status = "In Stock";
     let statusClass = "inventory-status-available";
 
-    if (available <= 0) {
+    if (!item.is_active) {
+        status = "Inactive";
+        statusClass = "inventory-status-inactive";
+    } else if (available <= 0) {
         status = "Out of Stock";
         statusClass = "inventory-status-out-of-stock";
     } else if (available <= item.minimum_stock) {
@@ -807,6 +1054,7 @@ async function openItemDetails(itemId) {
     setText("drawerMinimumStock", `${item.minimum_stock} ${item.unit}`);
     setText("drawerUnitCost", `₱${Number(item.unit_cost).toFixed(2)}`);
     setText("drawerTotalStock", `${item.current_stock} ${item.unit}`);
+    setText("drawerReservedStock", `${item.reserved_stock} ${item.unit}`);
     setText("drawerItemDescription", item.description || "No description provided.");
 
     const statusElement = document.getElementById("drawerItemStatus");
@@ -879,9 +1127,9 @@ async function loadItemMovementHistory(itemId) {
         return `
             <div class="inv-movement-row">
                 <span class="inv-move-badge ${
-                    /in|receipt/i.test(movement.movement_type)
-                        ? "incoming"
-                        : "outgoing"
+                    movement.movement_type === "Stock In"
+                    ? "incoming"
+                    : "outgoing"
                 }">
                     ${escapeHTML(movement.movement_type)}
                 </span>

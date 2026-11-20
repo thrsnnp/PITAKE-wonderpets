@@ -918,3 +918,128 @@
     color: #2563eb;
     border-color: #93c5fd;
 }
+
+/* Table Column Widths (Total = 100%) */
+.w-id     { width: 10%; }
+.w-name   { width: 20%; }
+.w-cat    { width: 15%; }
+.w-qty    { width: 10%; }
+.w-min    { width: 10%; }
+.w-unit   { width: 8%;  }
+.w-status { width: 11%; }
+.w-actions,
+.w-view   { width: 16%; }
+
+.inv-table th.w-actions,
+.inv-table td.cell-actions,
+.inv-table th.w-view,
+.inv-table td.cell-view {
+  text-align: center;
+  padding-left: 4px;
+  padding-right: 12px;
+}
+
+/* Action buttons container */
+.inventory-actions,
+.row-actions-group {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+/* Icon action buttons (+ and pencil) */
+.inventory-actions .adjust-stock-btn,
+.inventory-actions .edit-item-btn {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #64748b;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.inventory-actions .adjust-stock-btn:hover:not(:disabled) {
+  background: #f0fdf4;
+  color: #15803d;
+  border-color: #86efac;
+}
+
+.inventory-actions .edit-item-btn:hover:not(:disabled) {
+  background: #eff6ff;
+  color: #2563eb;
+  border-color: #93c5fd;
+}
+
+.inventory-actions button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Activate / Deactivate button (auto-sizes to text cleanly) */
+/* Base button layout */
+.toggle-item-status-btn,
+.toggle-status-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-width: 68px;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 7px;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+/* Item is ACTIVE -> button shows "Deactivate" -> RED */
+.toggle-item-status-btn.is-active,
+.toggle-status-btn.is-active {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.toggle-item-status-btn.is-active:hover,
+.toggle-status-btn.is-active:hover {
+  background: #fee2e2;
+  color: #991b1b;
+  border-color: #fca5a5;
+}
+
+/* Item is INACTIVE -> button shows "Activate" -> GREEN */
+.toggle-item-status-btn.is-inactive,
+.toggle-status-btn.is-inactive {
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.toggle-item-status-btn.is-inactive:hover,
+.toggle-status-btn.is-inactive:hover {
+  background: #dcfce7;
+  color: #166534;
+  border-color: #86efac;
+}
+
+/* Inactive status pill & dimmed row */
+.inventory-status-inactive {
+  background: #eeeeee;
+  color: #666666;
+}
+
+.row-inactive {
+  opacity: 0.65;
+  background-color: rgba(237, 226, 217, 0.25);
+}
