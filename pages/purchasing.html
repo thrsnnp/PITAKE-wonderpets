@@ -1,0 +1,883 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PITAKE — Purchasing Management</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Shared dashboard styles -->
+    <link rel="stylesheet" href="../css/dashboard.css">
+
+    <!-- Shared sidebar styles -->
+    <link rel="stylesheet" href="../css/sidebar.css">
+
+    <!-- Purchasing styles -->
+    <link rel="stylesheet" href="../css/purchasing.css">
+</head>
+
+<body>
+
+<div class="app-layout">
+
+    <!-- =====================================
+         SHARED SIDEBAR
+    ====================================== -->
+
+    <div id="sidebar-container"></div>
+
+
+    <!-- =====================================
+         MAIN WORKSPACE
+    ====================================== -->
+
+    <div class="main-wrapper">
+
+        <!-- TOP HEADER -->
+
+        <header class="top-header">
+
+            <div class="search-box">
+
+                <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                >
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <path d="m20 20-4-4"></path>
+                </svg>
+
+                <input
+                    type="text"
+                    id="globalSearch"
+                    placeholder="Search everything..."
+                    aria-label="Search everything"
+                    autocomplete="off"
+                >
+
+                <kbd class="search-kbd">Ctrl K</kbd>
+
+                <div
+                    id="globalSearchResults"
+                    class="global-search-results hidden"
+                >
+                    <p class="search-empty">
+                        Start typing to search.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="header-actions">
+
+                <!-- NOTIFICATIONS -->
+
+                <div class="notif-wrapper">
+
+                    <button
+                        type="button"
+                        id="notif-btn"
+                        class="notif-btn"
+                        aria-label="Notifications"
+                    >
+
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.7"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                        >
+                            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z"></path>
+                            <path d="M10 21h4"></path>
+                        </svg>
+
+                        <span
+                            class="notif-badge"
+                            id="notifBadge"
+                        ></span>
+
+                    </button>
+
+                    <div
+                        id="notif-popover"
+                        class="notif-popover hidden"
+                    >
+
+                        <p class="font-display notif-title">
+                            Notifications
+                        </p>
+
+                        <div id="notificationList">
+
+                            <p class="notif-text">
+                                No notifications to display.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <span class="header-divider"></span>
+
+
+                <!-- USER PROFILE -->
+
+                <button
+                    type="button"
+                    class="user-profile-btn"
+                >
+
+                    <div
+                        class="user-avatar"
+                        id="userAvatar"
+                    >
+                        AD
+                    </div>
+
+                    <div>
+
+                        <p
+                            class="user-name"
+                            id="userName"
+                        >
+                            Admin
+                        </p>
+
+                        <p
+                            class="user-role"
+                            id="userRole"
+                        >
+                            Administrator
+                        </p>
+
+                    </div>
+
+                    <svg
+                        class="user-chevron"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.7"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                    >
+                        <path d="m8 10 4 4 4-4"></path>
+                    </svg>
+
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- =====================================
+             PURCHASING CONTENT
+        ====================================== -->
+
+        <main class="main-content">
+
+            <div class="purchasing-page">
+
+                <!-- PAGE HEADER -->
+
+                <section class="purchasing-header">
+
+                    <div>
+
+                        <h1 class="font-display">
+                            Purchasing Management
+                        </h1>
+
+                        <p>
+                            Manage purchase requests, suppliers,
+                            and procurement activities.
+                        </p>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        class="primary-btn"
+                        id="createPurchaseBtn"
+                    >
+                        + Create Purchase Request
+                    </button>
+
+                </section>
+
+
+                <!-- =====================================
+                     PURCHASING STATISTICS
+                ====================================== -->
+
+                <section class="purchasing-stats">
+
+                    <!-- TOTAL ORDERS -->
+
+                    <article class="stat-card">
+
+                        <div class="stat-top">
+
+                            <div class="stat-icon icon-brown">
+                                <svg
+                                    width="18"
+                                    height="18"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.7"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M4 7v13h16V7M3 3h18v4H3zM9 11h6"></path>
+                                </svg>
+                            </div>
+
+                        </div>
+
+                        <p class="stat-label">
+                            Total Purchase Orders
+                        </p>
+
+                        <p
+                            class="font-display stat-value"
+                            id="totalOrders"
+                        >
+                            0
+                        </p>
+
+                        <p class="stat-detail">
+                            All purchase orders
+                        </p>
+
+                    </article>
+
+
+                    <!-- PENDING ORDERS -->
+
+                    <article class="stat-card">
+
+                        <div class="stat-top">
+
+                            <div class="stat-icon icon-gold">
+
+                                <svg
+                                    width="18"
+                                    height="18"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.7"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    aria-hidden="true"
+                                >
+                                    <circle cx="12" cy="12" r="9"></circle>
+                                    <path d="M12 7v5l3 2"></path>
+                                </svg>
+
+                            </div>
+
+                        </div>
+
+                        <p class="stat-label">
+                            Pending Orders
+                        </p>
+
+                        <p
+                            class="font-display stat-value"
+                            id="pendingOrders"
+                        >
+                            0
+                        </p>
+
+                        <p class="stat-detail">
+                            Awaiting approval
+                        </p>
+
+                    </article>
+
+
+                    <!-- APPROVED ORDERS -->
+
+                    <article class="stat-card">
+
+                        <div class="stat-top">
+
+                            <div class="stat-icon icon-pink">
+
+                                <svg
+                                    width="18"
+                                    height="18"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.7"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    aria-hidden="true"
+                                >
+                                    <circle cx="12" cy="12" r="9"></circle>
+                                    <path d="m8 12 3 3 5-6"></path>
+                                </svg>
+
+                            </div>
+
+                        </div>
+
+                        <p class="stat-label">
+                            Approved Orders
+                        </p>
+
+                        <p
+                            class="font-display stat-value"
+                            id="approvedOrders"
+                        >
+                            0
+                        </p>
+
+                        <p class="stat-detail">
+                            Approved for purchasing
+                        </p>
+
+                    </article>
+
+
+                    <!-- RECEIVED ORDERS -->
+
+                    <article class="stat-card">
+
+                        <div class="stat-top">
+
+                            <div class="stat-icon icon-maroon">
+
+                                <svg
+                                    width="18"
+                                    height="18"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.7"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M3 6h11v11H3zM14 10h4l3 3v4h-7z"></path>
+                                    <circle cx="7" cy="19" r="2"></circle>
+                                    <circle cx="18" cy="19" r="2"></circle>
+                                </svg>
+
+                            </div>
+
+                        </div>
+
+                        <p class="stat-label">
+                            Fully Received
+                        </p>
+
+                        <p
+                            class="font-display stat-value"
+                            id="receivedOrders"
+                        >
+                            0
+                        </p>
+
+                        <p class="stat-detail">
+                            Completed purchases
+                        </p>
+
+                    </article>
+
+                </section>
+
+
+                <!-- =====================================
+                     PURCHASE ORDERS TABLE
+                ====================================== -->
+
+                <section class="purchasing-panel">
+
+                    <div class="purchasing-panel-header">
+
+                        <div>
+
+                            <h2 class="font-display">
+                                Purchase Orders
+                            </h2>
+
+                            <p>
+                                View and manage all purchasing transactions.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- FILTER TOOLBAR -->
+
+                    <div class="purchasing-toolbar">
+
+                        <input
+                            type="text"
+                            id="purchaseSearch"
+                            placeholder="Search purchase orders..."
+                            aria-label="Search purchase orders"
+                        >
+
+                        <select
+                            id="statusFilter"
+                            aria-label="Filter by status"
+                        >
+                            <option value="">
+                                All Statuses
+                            </option>
+
+                            <option value="Pending">
+                                Pending
+                            </option>
+
+                            <option value="Approved">
+                                Approved
+                            </option>
+
+                            <option value="Fully Received">
+                                Fully Received
+                            </option>
+
+                        </select>
+
+
+                        <select
+                            id="supplierFilter"
+                            aria-label="Filter by supplier"
+                        >
+                            <option value="">
+                                All Suppliers
+                            </option>
+                        </select>
+
+
+                        <input
+                            type="date"
+                            id="dateFilter"
+                            aria-label="Filter by date"
+                        >
+
+                    </div>
+
+
+                    <!-- TABLE -->
+
+                    <div class="table-container">
+
+                        <table class="purchasing-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>PO Number</th>
+
+                                    <th>Supplier</th>
+
+                                    <th>Order Date</th>
+
+                                    <th>Item</th>
+
+                                    <th>Total Cost</th>
+
+                                    <th>Requested By</th>
+
+                                    <th>Status</th>
+
+                                    <th>Actions</th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody id="purchaseOrdersBody">
+
+                                <tr>
+
+                                    <td
+                                        colspan="8"
+                                        class="empty-message"
+                                    >
+                                        No purchase orders found.
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                    <!-- TABLE FOOTER -->
+
+                    <div class="purchasing-table-footer">
+
+                        <span id="purchaseCount">
+                            Showing 0 of 0 purchase orders
+                        </span>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </main>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================
+     CREATE PURCHASE REQUEST MODAL
+====================================== -->
+
+<div
+    class="modal-overlay"
+    id="purchaseModal"
+    hidden
+>
+
+    <div
+        class="purchase-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="purchaseModalTitle"
+    >
+
+        <!-- MODAL HEADER -->
+
+        <div class="purchase-modal-header">
+
+            <div>
+
+                <h2
+                    class="font-display"
+                    id="purchaseModalTitle"
+                >
+                    Create Purchase Request
+                </h2>
+
+                <p>
+                    Enter the details for a new purchase request.
+                </p>
+
+            </div>
+
+            <button
+                type="button"
+                id="closePurchaseModal"
+                aria-label="Close purchase request form"
+            >
+                &times;
+            </button>
+
+        </div>
+
+
+        <!-- PURCHASE FORM -->
+
+        <form id="purchaseForm">
+
+            <div class="purchase-modal-body">
+
+                <div class="form-grid">
+
+                    <!-- ITEM -->
+
+                    <div class="form-group">
+
+                        <label for="purchaseItem">
+                            Item
+                        </label>
+
+                        <select
+                            id="purchaseItem"
+                            name="item"
+                            required
+                        >
+
+                            <option value="">
+                                Select an item
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- QUANTITY -->
+
+                    <div class="form-group">
+
+                        <label for="purchaseQuantity">
+                            Quantity
+                        </label>
+
+                        <input
+                            type="number"
+                            id="purchaseQuantity"
+                            name="quantity"
+                            min="1"
+                            step="1"
+                            placeholder="Enter quantity"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- UNIT COST -->
+
+                    <div class="form-group">
+
+                        <label for="purchaseUnitCost">
+                            Estimated Unit Cost (₱)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="purchaseUnitCost"
+                            name="unitCost"
+                            min="0"
+                            step="0.01"
+                            placeholder="Enter unit cost"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- SUPPLIER -->
+
+                    <div class="form-group">
+
+                        <label for="purchaseSupplier">
+                            Supplier
+                        </label>
+
+                        <select
+                            id="purchaseSupplier"
+                            name="supplier"
+                        >
+
+                            <option value="">
+                                Select a supplier (optional)
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- PURPOSE -->
+
+                    <div class="form-group">
+
+                        <label for="purchasePurpose">
+                            Purpose
+                        </label>
+
+                        <input
+                            type="text"
+                            id="purchasePurpose"
+                            name="purpose"
+                            placeholder="Reason for purchasing"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- NOTES -->
+
+                    <div class="form-group">
+
+                        <label for="purchaseNotes">
+                            Additional Notes
+                        </label>
+
+                        <textarea
+                            id="purchaseNotes"
+                            name="notes"
+                            rows="3"
+                            placeholder="Additional information (optional)"
+                        ></textarea>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- MODAL FOOTER -->
+
+            <div class="purchase-modal-footer">
+
+                <button
+                    type="button"
+                    id="cancelPurchaseBtn"
+                    class="cancel-btn"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="primary-btn"
+                >
+                    Submit Purchase Request
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================
+     PAGE JAVASCRIPT
+====================================== -->
+
+<script>
+
+    // Notifications dropdown
+
+    const notifBtn = document.getElementById("notif-btn");
+    const notifPopover = document.getElementById("notif-popover");
+
+    notifBtn.addEventListener("click", () => {
+        notifPopover.classList.toggle("hidden");
+    });
+
+
+    // Purchase request modal
+
+    const purchaseModal = document.getElementById("purchaseModal");
+
+    const createPurchaseBtn =
+        document.getElementById("createPurchaseBtn");
+
+    const closePurchaseModal =
+        document.getElementById("closePurchaseModal");
+
+    const cancelPurchaseBtn =
+        document.getElementById("cancelPurchaseBtn");
+
+
+    function openPurchaseModal() {
+        purchaseModal.hidden = false;
+    }
+
+
+    function hidePurchaseModal() {
+        purchaseModal.hidden = true;
+    }
+
+
+    createPurchaseBtn.addEventListener(
+        "click",
+        openPurchaseModal
+    );
+
+
+    closePurchaseModal.addEventListener(
+        "click",
+        hidePurchaseModal
+    );
+
+
+    cancelPurchaseBtn.addEventListener(
+        "click",
+        hidePurchaseModal
+    );
+
+
+    purchaseModal.addEventListener("click", (event) => {
+
+        if (event.target === purchaseModal) {
+            hidePurchaseModal();
+        }
+
+    });
+
+
+    document.addEventListener("keydown", (event) => {
+
+        if (
+            event.key === "Escape" &&
+            !purchaseModal.hidden
+        ) {
+            hidePurchaseModal();
+        }
+
+    });
+
+
+    // Temporary submit handler.
+    // Database saving will be added later.
+
+    document.getElementById("purchaseForm")
+        .addEventListener("submit", (event) => {
+
+            event.preventDefault();
+
+            alert(
+                "Purchase request saving will be enabled after database integration."
+            );
+
+        });
+
+</script>
+
+
+<script type="module" src="../js/purchasing.js"></script>
+<script type="module" src="../js/sidebar.js"></script>
+
+</body>
+</html>
