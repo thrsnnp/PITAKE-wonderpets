@@ -52,13 +52,7 @@ loginForm.addEventListener("submit", async (event) => {
         return;
     }
 
-    if (profile.role !== "Admin") {
-        loginMessage.style.color = "red";
-        loginMessage.textContent = "Access denied. Admin account required.";
-
-        await supabase.auth.signOut();
-        return;
-    }
+    console.log("User verified:", profile);
 
     console.log("Admin verified:", profile);
 

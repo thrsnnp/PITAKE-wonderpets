@@ -29,12 +29,8 @@ async function protectDashboard() {
         return false;
     }
 
-    // Only Admin accounts can access the dashboard
-    if (profile.role !== "Admin") {
-        await supabase.auth.signOut();
-        window.location.href = "../index.html";
-        return false;
-    }
+    // Allow all active users to access the dashboard
+    console.log("Dashboard access granted:", profile.role);
 
     const fullName = `${profile.first_name} ${profile.last_name}`;
 
