@@ -1,0 +1,570 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PITAKE — Delivery Management</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Existing shared styles -->
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/sidebar.css">
+
+    <!-- Delivery-specific styles -->
+    <link rel="stylesheet" href="../css/delivery.css">
+</head>
+
+<body>
+
+<div class="app-layout">
+
+    <!-- SHARED SIDEBAR -->
+    <div id="sidebar-container"></div>
+
+    <!-- MAIN WORKSPACE -->
+    <div class="main-wrapper">
+
+        <!-- TOP HEADER -->
+        <header class="top-header">
+
+            <div class="search-box">
+                <svg width="18" height="18" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor"
+                     stroke-width="1.7" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <path d="m20 20-4-4"></path>
+                </svg>
+
+                <input
+                    type="text"
+                    id="globalSearch"
+                    placeholder="Search everything..."
+                    aria-label="Search everything"
+                    autocomplete="off"
+                >
+
+                <kbd class="search-kbd">Ctrl K</kbd>
+
+                <div id="globalSearchResults"
+                     class="global-search-results hidden">
+                    <p class="search-empty">
+                        Start typing to search.
+                    </p>
+                </div>
+            </div>
+
+            <div class="header-actions">
+
+                <!-- NOTIFICATIONS -->
+                <div class="notif-wrapper">
+                    <button type="button"
+                            id="notif-btn"
+                            class="notif-btn"
+                            aria-label="Notifications">
+                        <svg width="18" height="18"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="1.7">
+                            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z"></path>
+                            <path d="M10 21h4"></path>
+                        </svg>
+                        <span class="notif-badge" id="notifBadge"></span>
+                    </button>
+
+                    <div id="notif-popover"
+                         class="notif-popover hidden">
+                        <p class="font-display notif-title">
+                            Notifications
+                        </p>
+                        <div id="notificationList">
+                            <p class="notif-text">
+                                No notifications to display.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <span class="header-divider"></span>
+
+                <!-- LOGGED-IN USER PROFILE -->
+                <button type="button" class="user-profile-btn">
+                    <div class="user-avatar" id="userAvatar">
+                        ...
+                    </div>
+                    <div>
+                        <p class="user-name" id="userName">
+                            Loading...
+                        </p>
+                        <p class="user-role" id="userRole">
+                            Please wait
+                        </p>
+                    </div>
+                    <svg class="user-chevron"
+                         width="16" height="16"
+                         viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor"
+                         stroke-width="1.7">
+                        <path d="m8 10 4 4 4-4"></path>
+                    </svg>
+                </button>
+
+            </div>
+        </header>
+
+        <!-- DELIVERY MANAGEMENT CONTENT -->
+        <main class="main-content">
+
+            <div class="delivery-page">
+
+                <!-- PAGE HEADER -->
+                <section class="delivery-header">
+                    <div>
+                        <p class="delivery-eyebrow">
+                            OPERATIONS / DELIVERY
+                        </p>
+
+                        <h1 class="font-display">
+                            Delivery Management<span class="delivery-title-dot">.</span>
+                        </h1>
+
+                        <p class="delivery-description">
+                            Prepare, release, and track inventory assigned to photobooth events.
+                        </p>
+                    </div>
+
+                    <button type="button"
+                            class="delivery-primary-btn"
+                            id="createDeliveryBtn">
+                        + Create Delivery
+                    </button>
+                </section>
+<!-- DELIVERY MODULE NAVIGATION -->
+<div class="delivery-tabs" role="tablist"
+     aria-label="Delivery sections">
+
+    <button type="button"
+            class="delivery-tab active"
+            id="supplierReceivingTab"
+            role="tab"
+            aria-selected="true">
+        Supplier Receiving
+    </button>
+
+    <button type="button"
+            class="delivery-tab"
+            id="eventDeliveriesTab"
+            role="tab"
+            aria-selected="false">
+        Event Deliveries
+    </button>
+
+</div>
+                <!-- DELIVERY STATISTICS -->
+                <section class="delivery-stats">
+
+                    <article class="delivery-stat-card">
+                        <p class="delivery-stat-label">
+                            Total Deliveries
+                        </p>
+                        <h2 class="font-display" id="totalDeliveries">0</h2>
+                        <p class="delivery-stat-note">
+                            All delivery records
+                        </p>
+                    </article>
+
+                    <article class="delivery-stat-card">
+                        <p class="delivery-stat-label">
+                            Pending Preparation
+                        </p>
+                        <h2 class="font-display" id="pendingDeliveries">0</h2>
+                        <p class="delivery-stat-note">
+                            Awaiting item preparation
+                        </p>
+                    </article>
+
+                    <article class="delivery-stat-card">
+                        <p class="delivery-stat-label">
+                            Items Released
+                        </p>
+                        <h2 class="font-display" id="releasedItems">0</h2>
+                        <p class="delivery-stat-note">
+                            Inventory assigned to events
+                        </p>
+                    </article>
+
+                    <article class="delivery-stat-card">
+                        <p class="delivery-stat-label">
+                            Pending Returns
+                        </p>
+                        <h2 class="font-display" id="pendingReturns">0</h2>
+                        <p class="delivery-stat-note">
+                            Deliveries awaiting returns
+                        </p>
+                    </article>
+
+                </section>
+
+                <!-- DELIVERY TABLE -->
+                <section class="delivery-panel">
+
+                    <!-- FILTERS -->
+                    <div class="delivery-toolbar">
+
+                        <input
+                            type="search"
+                            id="deliverySearch"
+                            placeholder="Search delivery, event, or venue..."
+                            aria-label="Search deliveries"
+                        >
+
+                        <select id="deliveryStatusFilter"
+                                aria-label="Filter by delivery status">
+                            <option value="">All statuses</option>
+                            <option value="Pending Preparation">Pending Preparation</option>
+                            <option value="Ready for Release">Ready for Release</option>
+                            <option value="Released">Released</option>
+                            <option value="Partially Returned">Partially Returned</option>
+                            <option value="Returned">Returned</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+
+                        <select id="deliveryRequesterFilter"
+                                aria-label="Filter by requester">
+                            <option value="">All requesters</option>
+                        </select>
+
+                        <input type="date"
+                               id="deliveryDateFilter"
+                               aria-label="Filter by event date">
+
+                    </div>
+
+                    <!-- TABLE -->
+                    <div class="delivery-table-container">
+                        <table class="delivery-table">
+                            <thead>
+                                <tr>
+                                    <th>Delivery ID</th>
+                                    <th>Event Name</th>
+                                    <th>Event Date</th>
+                                    <th>Requested By</th>
+                                    <th>Items</th>
+                                    <th>Release Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="deliveryTableBody">
+                                <tr>
+                                    <td colspan="8" class="delivery-empty">
+                                        No deliveries found.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- FOOTER -->
+                    <div class="delivery-table-footer">
+                        <span id="deliveryCount">
+                            Showing 0 of 0 deliveries
+                        </span>
+                    </div>
+
+                </section>
+
+            </div>
+
+        </main>
+
+    </div>
+</div>
+
+<!-- CREATE DELIVERY MODAL -->
+<div class="delivery-modal-overlay"
+     id="createDeliveryModal"
+     hidden>
+
+    <div class="delivery-modal"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="createDeliveryTitle">
+
+        <div class="delivery-modal-header">
+            <div>
+                <h2 class="font-display" id="createDeliveryTitle">
+                    Create Delivery
+                </h2>
+                <p>
+                    Assign inventory and personnel to an upcoming event.
+                </p>
+            </div>
+
+            <button type="button"
+                    id="closeCreateDelivery"
+                    aria-label="Close create delivery form">
+                &times;
+            </button>
+        </div>
+
+        <form id="createDeliveryForm">
+
+            <div class="delivery-modal-body">
+                <div class="delivery-form-grid">
+
+                    <div class="delivery-form-group">
+                        <label for="deliveryEventName">Event Name</label>
+                        <input type="text"
+                               id="deliveryEventName"
+                               name="event"
+                               placeholder="Event or client name"
+                               required>
+                    </div>
+
+                    <div class="delivery-form-group">
+                        <label for="deliveryEventDate">Event Date</label>
+                        <input type="date"
+                               id="deliveryEventDate"
+                               name="date"
+                               required>
+                    </div>
+
+                    <div class="delivery-form-group delivery-full-width">
+                        <label for="deliveryVenue">Venue</label>
+                        <input type="text"
+                               id="deliveryVenue"
+                               name="venue"
+                               placeholder="Venue and room"
+                               required>
+                    </div>
+
+                    <div class="delivery-form-group">
+                        <label for="deliveryPersonnel">Assigned Personnel</label>
+                        <select id="deliveryPersonnel"
+                                name="personnel"
+                                required>
+                            <option value="">Select personnel</option>
+                        </select>
+                    </div>
+
+                    <div class="delivery-form-group">
+                        <label for="deliveryRequisition">Related Requisition</label>
+                        <select id="deliveryRequisition"
+                                name="requisition"
+                                required>
+                            <option value="">Select requisition</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="delivery-items-form">
+                    <h3>Requested Inventory Items</h3>
+
+                    <div id="deliveryItemRows">
+                        <!-- JavaScript will add item rows here -->
+                    </div>
+
+                    <button type="button"
+                            id="addDeliveryItemBtn"
+                            class="delivery-secondary-btn">
+                        + Add Item
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="delivery-modal-footer">
+                <button type="button"
+                        class="delivery-cancel-btn"
+                        id="cancelCreateDelivery">
+                    Cancel
+                </button>
+
+                <button type="submit"
+                        class="delivery-primary-btn">
+                    Create Delivery
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<!-- DELIVERY DETAILS DRAWER -->
+<div class="delivery-modal-overlay delivery-drawer-overlay"
+     id="deliveryDetailsModal"
+     hidden>
+
+    <aside class="delivery-details-drawer"
+           role="dialog"
+           aria-modal="true"
+           aria-labelledby="deliveryDetailsTitle">
+
+        <div class="delivery-drawer-header">
+            <div>
+                <p class="delivery-eyebrow">DELIVERY DETAILS</p>
+                <h2 class="font-display" id="deliveryDetailsTitle">
+                    Delivery
+                </h2>
+            </div>
+
+            <button type="button"
+                    id="closeDeliveryDetails"
+                    aria-label="Close delivery details">
+                &times;
+            </button>
+        </div>
+
+        <div class="delivery-drawer-content">
+
+            <div class="delivery-event-summary">
+                <div>
+                    <strong id="detailEventName">Event Name</strong>
+                    <p id="detailEventInfo">Event date and venue</p>
+                </div>
+                <span id="detailStatus" class="delivery-status">
+                    Pending Preparation
+                </span>
+            </div>
+
+            <div class="delivery-detail-grid">
+                <div>
+                    <span>REQUESTED BY</span>
+                    <strong id="detailRequester">—</strong>
+                </div>
+                <div>
+                    <span>ASSIGNED TO</span>
+                    <strong id="detailPersonnel">—</strong>
+                </div>
+                <div>
+                    <span>REQUISITION</span>
+                    <strong id="detailRequisition">—</strong>
+                </div>
+            </div>
+
+            <section class="delivery-checklist">
+                <h3>Item Checklist</h3>
+                <p>Preparation, release, usage, and returns</p>
+
+                <div id="deliveryChecklist">
+                    <!-- JavaScript will render delivery items -->
+                </div>
+            </section>
+
+        </div>
+
+        <div class="delivery-drawer-footer"
+             id="deliveryActionFooter">
+            <!-- Workflow action buttons -->
+        </div>
+
+    </aside>
+</div>
+
+<!-- ACTUAL USAGE MODAL -->
+<div class="delivery-modal-overlay"
+     id="deliveryUsageModal"
+     hidden>
+
+    <div class="delivery-modal delivery-small-modal"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="deliveryUsageTitle">
+
+        <div class="delivery-modal-header">
+            <div>
+                <h2 class="font-display" id="deliveryUsageTitle">
+                    Record Actual Usage
+                </h2>
+                <p>Record consumable quantities used during the event.</p>
+            </div>
+            <button type="button" id="closeUsageModal">&times;</button>
+        </div>
+
+        <form id="deliveryUsageForm">
+            <div class="delivery-modal-body"
+                 id="deliveryUsageItems"></div>
+
+            <div class="delivery-modal-footer">
+                <button type="button"
+                        class="delivery-cancel-btn"
+                        id="cancelUsageModal">
+                    Cancel
+                </button>
+                <button type="submit" class="delivery-primary-btn">
+                    Save Actual Usage
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<!-- RETURN INSPECTION MODAL -->
+<div class="delivery-modal-overlay"
+     id="deliveryReturnModal"
+     hidden>
+
+    <div class="delivery-modal"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="deliveryReturnTitle">
+
+        <div class="delivery-modal-header">
+            <div>
+                <h2 class="font-display" id="deliveryReturnTitle">
+                    Return Inspection
+                </h2>
+                <p>Record returned assets, condition, and missing items.</p>
+            </div>
+            <button type="button" id="closeReturnModal">&times;</button>
+        </div>
+
+        <form id="deliveryReturnForm">
+            <div class="delivery-modal-body">
+                <div id="deliveryReturnItems"></div>
+
+                <div class="delivery-form-group">
+                    <label for="deliveryReturnRemarks">
+                        Inspection Remarks
+                    </label>
+                    <textarea id="deliveryReturnRemarks"
+                              rows="3"
+                              placeholder="Note damage, cleaning, or repair requirements..."></textarea>
+                </div>
+            </div>
+
+            <div class="delivery-modal-footer">
+                <button type="button"
+                        class="delivery-cancel-btn"
+                        id="cancelReturnModal">
+                    Cancel
+                </button>
+                <button type="submit" class="delivery-primary-btn">
+                    Confirm Returns
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<!-- PAGE SCRIPTS -->
+<script type="module" src="../js/delivery.js"></script>
+<script type="module" src="../js/sidebar.js"></script>
+
+</body>
+</html>

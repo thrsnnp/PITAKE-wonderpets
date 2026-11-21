@@ -23,6 +23,16 @@
 
     <!-- Purchasing styles -->
     <link rel="stylesheet" href="../css/purchasing.css">
+<style>
+.purchasing-tabs{display:flex;gap:12px;margin:24px 0 18px;border-bottom:1px solid #e8d9cf}
+.purchasing-tab{border:0;border-bottom:3px solid transparent;background:transparent;padding:13px 18px;color:#896f70;font:600 14px "DM Sans",sans-serif;cursor:pointer}
+.purchasing-tab.active{color:#602d3c;border-bottom-color:#602d3c}
+.purchasing-tab:focus-visible{outline:2px solid #602d3c}
+#purchaseRequestsSection[hidden],#purchaseOrdersSection[hidden]{display:none!important}
+.purchase-requests-empty{text-align:center;padding:55px 20px;color:#8f7772}
+.purchase-requests-empty strong{display:block;color:#602d3c;margin-bottom:10px;font-size:17px}
+.purchase-requests-empty p{max-width:500px;margin:auto;line-height:1.6}
+</style>
 </head>
 
 <body>
@@ -224,13 +234,15 @@
 
                     </div>
 
-                    <button
-                        type="button"
-                        class="primary-btn"
-                        id="createPurchaseBtn"
-                    >
-                        + Create Purchase Request
-                    </button>
+                    
+                        <button
+                            type="button"
+                            class="primary-btn"
+                            id="createPurchaseBtn"
+                        >
+                            + Create Purchase Order
+                        </button>
+
 
                 </section>
 
@@ -283,7 +295,7 @@
                     </article>
 
 
-                    <!-- PENDING ORDERS -->
+                    <!-- AWAITING ORDERS -->
 
                     <article class="stat-card">
 
@@ -310,9 +322,7 @@
 
                         </div>
 
-                        <p class="stat-label">
-                            Pending Orders
-                        </p>
+                        <p class="stat-label">Pending Orders</p>
 
                         <p
                             class="font-display stat-value"
@@ -322,7 +332,7 @@
                         </p>
 
                         <p class="stat-detail">
-                            Awaiting approval
+                            Awaiting orders
                         </p>
 
                     </article>
@@ -356,18 +366,18 @@
                         </div>
 
                         <p class="stat-label">
-                            Approved Orders
+                            Awaiting Delivery
                         </p>
 
                         <p
                             class="font-display stat-value"
-                            id="approvedOrders"
+                            id="awaitingDelivery"
                         >
                             0
                         </p>
 
                         <p class="stat-detail">
-                            Approved for purchasing
+                            Ordered but not fully received
                         </p>
 
                     </article>
@@ -421,11 +431,78 @@
                 </section>
 
 
+                <!-- Purchasing navigation: requests first -->
+                <div class="purchasing-tabs" role="tablist" aria-label="Purchasing sections">
+                    <button type="button" class="purchasing-tab active" id="purchaseRequestsTab" role="tab" aria-selected="true" aria-controls="purchaseRequestsSection">Purchase Requests</button>
+                    <button type="button" class="purchasing-tab" id="purchaseOrdersTab" role="tab" aria-selected="false" aria-controls="purchaseOrdersSection">Purchase Orders</button>
+                </div>
+
+                <section class="purchasing-panel" id="purchaseRequestsSection" role="tabpanel" aria-labelledby="purchaseRequestsTab">
+                    <div class="purchasing-panel-header"><div>
+                        <h2 class="font-display">Purchase Requests</h2>
+                        <p>View and manage submitted purchase requests.</p>
+                    </div></div>
+                    
+<div class="purchasing-toolbar">
+    <input
+        type="search"
+        id="purchaseRequestSearch"
+        placeholder="Search requisition number or purpose..."
+        aria-label="Search purchase requests"
+    >
+
+
+
+<select id="purchaseRequestStatusFilter">
+    <option value="">All Statuses</option>
+    <option value="Needs Purchasing">Needs Purchasing</option>
+    <option value="Partially Ordered">Partially Ordered</option>
+    <option value="Fully Ordered">Fully Ordered</option>
+    <option value="No Shortage">No Shortage</option>
+    <option value="Fulfilled">Fulfilled</option>
+</select>
+
+
+</div>
+
+<div class="table-container">
+    <table class="purchasing-table">
+        <thead>
+            <tr>
+                <th>Request Number</th>
+                <th>Request Date</th>
+                <th>Item</th>
+                <th>Requested Qty</th>
+                <th>Shortage Qty</th>
+                <th>Purpose</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody id="purchaseRequestsBody">
+            <tr>
+                <td colspan="8" class="empty-message">
+                    Loading purchase requests...
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="purchasing-table-footer">
+    <span id="purchaseRequestCount">
+        Showing 0 purchase requests
+    </span>
+</div>
+
+                </section>
+
                 <!-- =====================================
                      PURCHASE ORDERS TABLE
                 ====================================== -->
 
-                <section class="purchasing-panel">
+                <section class="purchasing-panel" id="purchaseOrdersSection" role="tabpanel" aria-labelledby="purchaseOrdersTab" hidden>
 
                     <div class="purchasing-panel-header">
 
@@ -519,7 +596,8 @@
 
                                     <th>Requested By</th>
 
-                                    <th>Status</th>
+                                    <th>APPROVAL STATUS</th>
+<th>PURCHASE STATUS</th>
 
                                     <th>Actions</th>
 
@@ -592,15 +670,15 @@
 
             <div>
 
-                <h2
-                    class="font-display"
-                    id="purchaseModalTitle"
-                >
-                    Create Purchase Request
-                </h2>
 
+                <h2 class="font-display" id="purchaseModalTitle">
+                    Create Purchase Order
+                </h2>
                 <p>
-                    Enter the details for a new purchase request.
+                    Prepare a purchase order for an approved requisition shortage.
+                </p>
+                <p>
+                    Confirm the supplier, quantity, and unit cost before saving.
                 </p>
 
             </div>
@@ -608,7 +686,7 @@
             <button
                 type="button"
                 id="closePurchaseModal"
-                aria-label="Close purchase request form"
+                aria-label="Close purchase order form"
             >
                 &times;
             </button>
@@ -700,10 +778,11 @@
                         <select
                             id="purchaseSupplier"
                             name="supplier"
+                            required
                         >
 
                             <option value="">
-                                Select a supplier (optional)
+                                Select a supplier
                             </option>
 
                         </select>
@@ -768,7 +847,7 @@
                     type="submit"
                     class="primary-btn"
                 >
-                    Submit Purchase Request
+                    Create Purchase Order
                 </button>
 
             </div>
@@ -786,6 +865,23 @@
 
 <script>
 
+    // Functional tabs: Purchase Requests is the default.
+    const tabPairs = [
+        [document.getElementById("purchaseRequestsTab"), document.getElementById("purchaseRequestsSection")],
+        [document.getElementById("purchaseOrdersTab"), document.getElementById("purchaseOrdersSection")]
+    ];
+    function switchPurchasingTab(selected) {
+        tabPairs.forEach(([button, panel]) => {
+            const active = button === selected;
+            button.classList.toggle("active", active);
+            button.setAttribute("aria-selected", String(active));
+            button.tabIndex = active ? 0 : -1;
+            panel.hidden = !active;
+        });
+    }
+    tabPairs.forEach(([button]) => button.addEventListener("click", () => switchPurchasingTab(button)));
+    switchPurchasingTab(tabPairs[0][0]);
+
     // Notifications dropdown
 
     const notifBtn = document.getElementById("notif-btn");
@@ -796,88 +892,306 @@
     });
 
 
-    // Purchase request modal
-
-    const purchaseModal = document.getElementById("purchaseModal");
-
-    const createPurchaseBtn =
-        document.getElementById("createPurchaseBtn");
-
-    const closePurchaseModal =
-        document.getElementById("closePurchaseModal");
-
-    const cancelPurchaseBtn =
-        document.getElementById("cancelPurchaseBtn");
-
-
-    function openPurchaseModal() {
-        purchaseModal.hidden = false;
-    }
-
-
-    function hidePurchaseModal() {
-        purchaseModal.hidden = true;
-    }
-
-
-    createPurchaseBtn.addEventListener(
-        "click",
-        openPurchaseModal
-    );
-
-
-    closePurchaseModal.addEventListener(
-        "click",
-        hidePurchaseModal
-    );
-
-
-    cancelPurchaseBtn.addEventListener(
-        "click",
-        hidePurchaseModal
-    );
-
-
-    purchaseModal.addEventListener("click", (event) => {
-
-        if (event.target === purchaseModal) {
-            hidePurchaseModal();
-        }
-
-    });
-
-
-    document.addEventListener("keydown", (event) => {
-
-        if (
-            event.key === "Escape" &&
-            !purchaseModal.hidden
-        ) {
-            hidePurchaseModal();
-        }
-
-    });
-
-
-    // Temporary submit handler.
-    // Database saving will be added later.
-
-    document.getElementById("purchaseForm")
-        .addEventListener("submit", (event) => {
-
-            event.preventDefault();
-
-            alert(
-                "Purchase request saving will be enabled after database integration."
-            );
-
-        });
-
 </script>
 
+<!-- Purchase Order Details Modal -->
 
+<!-- PURCHASE ORDER DETAILS DRAWER -->
+<div class="modal-overlay purchase-drawer-overlay"
+     id="viewPurchaseModal" hidden>
+
+    <div class="purchase-modal purchase-details-drawer"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="viewPoNumber">
+
+        <!-- HEADER -->
+        <div class="po-details-header">
+            <div>
+                <span class="po-details-eyebrow">
+                    PURCHASE ORDER
+                </span>
+
+                <h2 id="viewPoNumber">PO Number</h2>
+                <p id="viewPurchaseDate">Purchase Date</p>
+            </div>
+
+            <button type="button"
+                    id="closeViewPurchaseModal"
+                    aria-label="Close purchase order details">
+                &times;
+            </button>
+        </div>
+
+        <!-- SCROLLABLE CONTENT -->
+        <div class="po-details-content">
+
+            <!-- TOTAL AMOUNT -->
+            <div class="po-amount-card">
+                <div class="po-amount-top">
+                    <span>TOTAL PURCHASE AMOUNT</span>
+                    <span class="po-details-status"
+                          id="viewStatusBadge">
+                        Pending
+                    </span>
+                </div>
+
+                <h3 id="viewTotalAmount">₱0.00</h3>
+            </div>
+
+            <!-- INFORMATION GRID -->
+            <div class="po-details-grid">
+                <div class="po-detail-field">
+                    <span>SUPPLIER</span>
+                    <strong id="viewSupplier"></strong>
+                </div>
+
+                <div class="po-detail-field">
+                    <span>REQUESTED BY</span>
+                    <strong id="viewRequestedBy"></strong>
+                    <div class="po-detail-field">
+    <span class="po-detail-label">Source Requisition</span>
+    <span id="viewSourceRequisition">N/A</span>
+</div>
+                </div>
+
+                <div class="po-detail-field">
+                    <span>APPROVAL STATUS</span>
+                    <strong id="viewApprovalStatus"></strong>
+                </div>
+
+                <div class="po-detail-field">
+                    <span>PURCHASE STATUS</span>
+                    <strong id="viewPurchaseStatus"></strong>
+                </div>
+            </div>
+
+            <!-- ORDERED ITEMS -->
+            <section class="po-items-section">
+                <div class="po-items-heading">
+                    <div class="po-items-icon">⬡</div>
+
+                    <div>
+                        <h3>Ordered Items</h3>
+                        <p>Purchase order item details</p>
+                    </div>
+                </div>
+
+                <div id="viewItems" class="po-items-list"></div>
+            </section>
+
+        </div>
+
+        <!-- FOOTER -->
+        <div class="po-details-footer">
+
+    <button
+        type="button"
+        id="markAsOrderedBtn"
+        class="primary-btn"
+        hidden
+    >
+        Mark as Ordered
+    </button>
+
+    <button
+        type="button"
+        id="closeViewPurchaseBtn"
+    >
+        Close Details
+    </button>
+
+</div>
+
+    </div>
+</div>
 <script type="module" src="../js/purchasing.js"></script>
 <script type="module" src="../js/sidebar.js"></script>
+<!-- MARK AS ORDERED CONFIRMATION -->
+<div id="confirmOrderedModal" class="po-confirm-overlay" hidden>
+    <div class="po-confirm-card"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="confirmOrderedTitle">
+
+        <div class="po-confirm-icon">✓</div>
+
+        <h2 id="confirmOrderedTitle">
+            Confirm Purchase Order
+        </h2>
+
+        <p class="po-confirm-description">
+            Are you sure you want to mark
+            <strong id="confirmOrderedNumber"></strong>
+            as Ordered?
+        </p>
+
+        <div class="po-confirm-details">
+            This confirms that the order has been
+            placed with the supplier.
+        </div>
+
+        <div class="po-confirm-actions">
+            <button type="button"
+                    id="cancelOrderedBtn"
+                    class="po-confirm-cancel">
+                Cancel
+            </button>
+
+            <button type="button"
+                    id="approveOrderedBtn"
+                    class="po-confirm-approve">
+                Confirm Order
+            </button>
+        </div>
+    </div>
+</div>
+<!-- CUSTOM PURCHASE ORDER CONFIRMATION -->
+<div id="confirmPOModal" class="po-confirm-overlay" hidden>
+    <div class="po-confirm-card">
+        <div class="po-confirm-icon">✓</div>
+
+        <h2>Confirm Purchase Order</h2>
+
+        <p class="po-confirm-description">
+            Please review the details before creating
+            this Purchase Order.
+        </p>
+
+        <div id="confirmPODetails"
+             class="po-confirm-details">
+        </div>
+
+        <p class="po-confirm-warning">
+            This action will save a Purchase Order
+            to the database.
+        </p>
+
+        <div class="po-confirm-actions">
+            <button type="button"
+                    id="cancelPOConfirmation"
+                    class="po-confirm-cancel">
+                Cancel
+            </button>
+
+            <button type="button"
+                    id="approvePOConfirmation"
+                    class="po-confirm-approve">
+                Confirm & Create
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+.po-confirm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(28, 15, 20, 0.55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    padding: 20px;
+}
+
+.po-confirm-overlay[hidden] {
+    display: none !important;
+}
+
+.po-confirm-card {
+    background: #fffaf7;
+    border-radius: 18px;
+    width: 100%;
+    max-width: 460px;
+    padding: 32px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    font-family: "DM Sans", sans-serif;
+}
+
+.po-confirm-icon {
+    width: 54px;
+    height: 54px;
+    background: #f1e2e5;
+    color: #602d3c;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 18px;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.po-confirm-card h2 {
+    color: #602d3c;
+    font-family: "Playfair Display", serif;
+    font-size: 25px;
+    margin-bottom: 12px;
+}
+
+.po-confirm-description {
+    color: #806c70;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.po-confirm-details {
+    background: #f7eeea;
+    border-radius: 12px;
+    padding: 18px;
+    margin: 22px 0;
+    text-align: left;
+    font-size: 14px;
+    line-height: 1.9;
+    color: #4b343a;
+}
+
+.po-confirm-details strong {
+    color: #602d3c;
+}
+
+.po-confirm-warning {
+    color: #9a6b25;
+    font-size: 12px;
+    margin-bottom: 22px;
+}
+
+.po-confirm-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.po-confirm-actions button {
+    flex: 1;
+    padding: 13px;
+    border-radius: 9px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.po-confirm-cancel {
+    background: white;
+    border: 1px solid #dbc9c5;
+    color: #602d3c;
+}
+
+.po-confirm-approve {
+    background: #602d3c;
+    border: none;
+    color: white;
+}
+
+.po-confirm-approve:hover {
+    background: #48202c;
+}
+
+.po-confirm-approve:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+</style>
 
 </body>
 </html>
