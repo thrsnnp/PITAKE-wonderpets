@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Management | PITAKE</title>
+
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/users.css">
+  <link rel="stylesheet" href="../css/sidebar.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <div id="usersPage" class="app-layout">
+    <!-- SIDEBAR -->
+    <div id="sidebar-container"></div>
+
+    <!-- MAIN WORKSPACE -->
+    <div class="main-wrapper">
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="search-box">
+          <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7">
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-4-4" />
+          </svg>
+          <input
+            type="search"
+            id="searchUsers"
+            placeholder="Search users by name or email..."
+            aria-label="Search users"
+          />
+          <kbd class="search-kbd">⌘ K</kbd>
+        </div>
+
+        <div class="header-actions">
+          <div class="notif-wrapper">
+            <button id="notif-btn" class="notif-btn" aria-label="Notifications">
+              <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7">
+                <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z" />
+                <path d="M10 21h4" />
+              </svg>
+              <span class="notif-badge"></span>
+            </button>
+          </div>
+
+          <span class="header-divider"></span>
+
+          <div class="user-profile-btn" id="headerUserProfile">
+            <div class="user-avatar" id="headerUserAvatar">A</div>
+            <div>
+              <p class="user-name" id="headerUserName">Administrator</p>
+              <p class="user-role">Admin</p>
+            </div>
+            <svg class="user-chevron" aria-hidden="true" fill="none" height="16" viewBox="0 0 24 24" width="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7">
+              <path d="m8 10 4 4 4-4" />
+            </svg>
+          </div>
+        </div>
+      </header>
+
+      <!-- MAIN CONTENT -->
+      <main class="main-content" id="mainContent">
+        <!-- Page Title Row -->
+        <section class="page-header">
+          <div>
+            <p class="page-date">Workspace / User Management</p>
+            <h1 class="font-display page-title">User Management<span class="title-dot">.</span></h1>
+            <p class="page-subtitle">Manage system accounts, roles, and department assignments.</p>
+          </div>
+
+          <button class="primary-btn" id="addUserBtn">
+            <svg aria-hidden="true" fill="none" height="16" viewBox="0 0 24 24" width="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7">
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+            Add New User
+          </button>
+        </section>
+
+        <!-- User Statistics -->
+        <section class="stats-grid">
+          <article class="stat-card">
+            <div class="stat-orb stat-orb-brown"></div>
+            <div class="stat-top">
+              <div class="stat-icon icon-brown">
+                <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+              </div>
+              <svg class="dots-icon" aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18">
+                <circle cx="5" cy="12" r="1" fill="currentColor" />
+                <circle cx="12" cy="12" r="1" fill="currentColor" />
+                <circle cx="19" cy="12" r="1" fill="currentColor" />
+              </svg>
+            </div>
+            <p class="stat-label">Total Users</p>
+            <p class="font-display stat-value" id="totalUsers">0</p>
+            <div class="stat-meta">
+              <span class="stat-change">Active</span>
+              <span class="stat-detail">registered accounts</span>
+            </div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-orb stat-orb-maroon"></div>
+            <div class="stat-top">
+              <div class="stat-icon icon-maroon">
+                <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
+                </svg>
+              </div>
+              <svg class="dots-icon" aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18">
+                <circle cx="5" cy="12" r="1" fill="currentColor" />
+                <circle cx="12" cy="12" r="1" fill="currentColor" />
+                <circle cx="19" cy="12" r="1" fill="currentColor" />
+              </svg>
+            </div>
+            <p class="stat-label">Administrators</p>
+            <p class="font-display stat-value" id="adminCount">0</p>
+            <div class="stat-meta">
+              <span class="stat-change">Full access</span>
+              <span class="stat-detail">system administrators</span>
+            </div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-orb stat-orb-pink"></div>
+            <div class="stat-top">
+              <div class="stat-icon icon-pink">
+                <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7">
+                  <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                </svg>
+              </div>
+              <svg class="dots-icon" aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18">
+                <circle cx="5" cy="12" r="1" fill="currentColor" />
+                <circle cx="12" cy="12" r="1" fill="currentColor" />
+                <circle cx="19" cy="12" r="1" fill="currentColor" />
+              </svg>
+            </div>
+            <p class="stat-label">Head Managers</p>
+            <p class="font-display stat-value" id="managerCount">0</p>
+            <div class="stat-meta">
+              <span class="stat-change">Approvers</span>
+              <span class="stat-detail">department managers</span>
+            </div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-orb stat-orb-gold"></div>
+            <div class="stat-top">
+              <div class="stat-icon icon-gold">
+                <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+              </div>
+              <svg class="dots-icon" aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18">
+                <circle cx="5" cy="12" r="1" fill="currentColor" />
+                <circle cx="12" cy="12" r="1" fill="currentColor" />
+                <circle cx="19" cy="12" r="1" fill="currentColor" />
+              </svg>
+            </div>
+            <p class="stat-label">Department Staff</p>
+            <p class="font-display stat-value" id="staffCount">0</p>
+            <div class="stat-meta">
+              <span class="stat-change">Operations</span>
+              <span class="stat-detail">registered staff</span>
+            </div>
+          </article>
+        </section>
+
+        <!-- User Directory Table -->
+        <section class="table-card">
+          <div class="table-header">
+            <div>
+              <h2 class="font-display panel-title">User Directory</h2>
+              <p class="panel-subtitle">View and manage registered PITAKE accounts and permissions.</p>
+            </div>
+
+            <!-- Filters -->
+            <div class="users-toolbar">
+              <select id="roleFilter" aria-label="Filter by role">
+                <option value="All">All Roles</option>
+                <option value="Admin">Admin</option>
+                <option value="Head Manager">Head Manager</option>
+                <option value="Department Staff">Department Staff</option>
+              </select>
+
+              <select id="departmentFilter" aria-label="Filter by department">
+                <option value="All">All Departments</option>
+                <option value="Financial">Financial</option>
+                <option value="Operational">Operational</option>
+                <option value="Marketing">Marketing</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="data-table users-table">
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Department</th>
+                  <th>Date Created</th>
+                  <th>Account Status</th>
+                  <th class="col-actions">Actions</th>
+                </tr>
+              </thead>
+
+              <tbody id="usersTableBody">
+                <tr>
+                  <td colspan="7" class="empty-state">
+                    Loading users...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- ADD USER MODAL -->
+  <div class="modal-overlay" id="userModal">
+    <div class="user-modal">
+      <div class="modal-header">
+        <div>
+          <h2 class="font-display panel-title">Create New User</h2>
+          <p class="panel-subtitle">Add a new account to the PITAKE system.</p>
+        </div>
+
+        <button type="button" class="modal-close" id="closeUserModal" aria-label="Close modal">
+          ×
+        </button>
+      </div>
+
+      <form id="userForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input
+              type="text"
+              id="firstName"
+              name="first_name"
+              placeholder="Enter first name"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input
+              type="text"
+              id="lastName"
+              name="last_name"
+              placeholder="Enter last name"
+              required
+            >
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Enter email address"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="password">Temporary Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="At least 10 characters"
+            minlength="10"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="userRole">User Role</label>
+          <select id="userRole" name="role" required>
+            <option value="">Select role</option>
+            <option value="Admin">Admin</option>
+            <option value="Head Manager">Head Manager</option>
+            <option value="Department Staff">Department Staff</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="departmentGroup">
+          <label for="userDepartment">Department</label>
+          <select id="userDepartment" name="department">
+            <option value="">Select department</option>
+            <option value="Financial">Financial</option>
+            <option value="Operational">Operational</option>
+            <option value="Marketing">Marketing</option>
+          </select>
+        </div>
+
+        <div class="form-message" id="userFormMessage"></div>
+
+        <div class="modal-actions">
+          <button type="button" class="secondary-btn" id="cancelUserBtn">
+            Cancel
+          </button>
+
+          <button type="submit" class="primary-btn" id="saveUserBtn">
+            Create Account
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- EDIT USER MODAL -->
+  <div class="modal-overlay" id="editUserModal">
+    <div class="user-modal">
+      <div class="modal-header">
+        <div>
+          <h2 class="font-display panel-title">Edit User</h2>
+          <p class="panel-subtitle">Update account details and permissions.</p>
+        </div>
+
+        <button type="button" class="modal-close" id="closeEditUserModal" aria-label="Close modal">
+          ×
+        </button>
+      </div>
+
+      <form id="editUserForm">
+        <input type="hidden" id="editUserId">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editFirstName">First Name</label>
+            <input type="text" id="editFirstName" required>
+          </div>
+
+          <div class="form-group">
+            <label for="editLastName">Last Name</label>
+            <input type="text" id="editLastName" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="editUserEmail">Email Address</label>
+          <input type="email" id="editUserEmail" readonly>
+        </div>
+
+        <div class="form-group">
+          <label for="editUserRole">User Role</label>
+          <select id="editUserRole" required>
+            <option value="Admin">Admin</option>
+            <option value="Head Manager">Head Manager</option>
+            <option value="Department Staff">Department Staff</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="editDepartmentGroup">
+          <label for="editUserDepartment">Department</label>
+          <select id="editUserDepartment">
+            <option value="">Select department</option>
+            <option value="Financial">Financial</option>
+            <option value="Operational">Operational</option>
+            <option value="Marketing">Marketing</option>
+          </select>
+        </div>
+
+        <div class="form-message" id="editUserMessage"></div>
+
+        <div class="modal-actions">
+          <button type="button" class="secondary-btn" id="cancelEditUserBtn">
+            Cancel
+          </button>
+
+          <button type="submit" class="primary-btn" id="updateUserBtn">
+            Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <script type="module" src="../js/users.js"></script>
+  <script type="module" src="../js/sidebar.js"></script>
+</body>
+</html>

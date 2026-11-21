@@ -30,13 +30,23 @@ loginForm.addEventListener("submit", async (event) => {
     // Check the user's role in the database
     const { data: profile, error: profileError } = await supabase
         .from("users")
-        .select("first_name, last_name, role, department")
+        .select("first_name, last_name, role, department, is_active")
         .eq("id", data.user.id)
         .single();
 
     if (profileError) {
         loginMessage.style.color = "red";
         loginMessage.textContent = "Unable to verify account role.";
+
+        await supabase.auth.signOut();
+        return;
+    }
+
+    // Check whether the account is active
+    if (!profile.is_active) {
+        loginMessage.style.color = "red";
+        loginMessage.textContent =
+            "Your account is inactive. Please contact an administrator.";
 
         await supabase.auth.signOut();
         return;

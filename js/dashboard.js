@@ -12,11 +12,25 @@ async function protectDashboard() {
 
     const { data: profile, error: profileError } = await supabase
         .from("users")
-        .select("first_name, last_name, role, department")
+        .select("first_name, last_name, role, department, is_active")
         .eq("id", user.id)
         .single();
 
-    if (profileError || !profile || profile.role !== "Admin") {
+    if (profileError || !profile) {
+        await supabase.auth.signOut();
+        window.location.href = "../index.html";
+        return false;
+    }
+
+    // Reject inactive accounts
+    if (!profile.is_active) {
+        await supabase.auth.signOut();
+        window.location.href = "../index.html";
+        return false;
+    }
+
+    // Only Admin accounts can access the dashboard
+    if (profile.role !== "Admin") {
         await supabase.auth.signOut();
         window.location.href = "../index.html";
         return false;
